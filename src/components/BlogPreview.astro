@@ -1,8 +1,9 @@
 ---
 // src/components/BlogPreview.astro
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import BlogCard from './BlogCard.astro';
-import { useTranslations, type Locale } from '../i18n/ui';
+import type { Locale } from '../i18n/ui';
 
 interface Props {
   t: any;
@@ -11,39 +12,31 @@ interface Props {
 
 const { t, currentLang = 'en' } = Astro.props as Props;
 
-// ✅ CORRECTION : Récupération de TOUS les posts
 const allPosts = await getCollection('blog');
 
-// ✅ FILTRE SIMPLIFIÉ ET ROBUSTE
-const posts = allPosts.filter(post => {
-  // Extraction de la langue depuis l'ID du fichier
-  // Exemples d'ID possibles :
-  // - "en/air-fryer-review" ✅
-  // - "air-fryer-review" (si pas de sous-dossier) ❌
+// ✅ FILTRE TYPÉ
+const posts = allPosts.filter((post: CollectionEntry<'blog'>) => {
   const [firstSegment] = post.id.split('/');
   
-  // Si l'ID contient un slash, firstSegment est la langue
-  // Sinon, on vérifie si firstSegment correspond à une langue valide
   if (post.id.includes('/')) {
     return firstSegment === currentLang;
   }
   
-  // Fallback : si pas de structure lang/, on accepte tout pour 'en'
   return currentLang === 'en';
 });
 
-const sortedPosts = posts.sort((a, b) => 
+const sortedPosts = posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
 const latestPosts = sortedPosts.slice(0, 3);
 
-// 🔍 DEBUG (à retirer en production)
+// 🔍 DEBUG
 console.log('🔍 BlogPreview Debug:', {
   currentLang,
   totalPosts: allPosts.length,
   filteredPosts: posts.length,
-  postIds: allPosts.map(p => p.id),
+  postIds: allPosts.map((p: CollectionEntry<'blog'>) => p.id),
 });
 ---
 
@@ -60,14 +53,13 @@ console.log('🔍 BlogPreview Debug:', {
     
     {latestPosts.length > 0 ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {latestPosts.map(post => <BlogCard post={post} />)}
+        {latestPosts.map((post: CollectionEntry<'blog'>) => <BlogCard post={post} />)}
       </div>
     ) : (
       <div class="text-center py-10 bg-white/50 rounded-2xl border border-dashed border-orange-300">
         <p class="text-slate-600 mb-2">
           {currentLang === 'fr' ? "Aucun article disponible pour le moment." : "No posts available yet."}
         </p>
-        <!-- 🔍 Info de debug -->
         <p class="text-xs text-slate-400 mt-4">
           Debug: {allPosts.length} articles totaux, langue: {currentLang}
         </p>

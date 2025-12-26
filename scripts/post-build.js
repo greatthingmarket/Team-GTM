@@ -1,37 +1,58 @@
 // scripts/post-build.js
 /**
  * Script exécuté automatiquement après chaque build Netlify
- * Notifie IndexNow des nouvelles URLs
+ * Notifie les moteurs de recherche via IndexNow
  */
 
 import https from 'https';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-// ⚠️ IMPORTANT : Remplacez par votre domaine de production
-const SITE_URL = process.env.URL || 'https://greatthingmarket.com';
-const DEPLOY_CONTEXT = process.env.CONTEXT; // "production", "deploy-preview", "branch-deploy"
+const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://greatthingmarket.com';
+const DEPLOY_CONTEXT = process.env.CONTEXT;
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
 
 /**
- * Envoie une requête POST à l'API IndexNow
+ * Soumet le sitemap à IndexNow (Google, Bing, Yandex)
  */
-function notifyIndexNow() {
+async function notifyIndexNow() {
+  // Uniquement en production
+  if (DEPLOY_CONTEXT !== 'production') {
+    console.log('⏭️  Skipping IndexNow (not production)');
+    return { skipped: true };
+  }
+
+  if (!INDEXNOW_KEY) {
+    console.log('⚠️  INDEXNOW_KEY not configured, skipping notification');
+    return { skipped: true };
+  }
+
+  console.log('📤 Notifying IndexNow...');
+
+  const urls = [
+    `${SITE_URL}/en/`,
+    `${SITE_URL}/fr/`,
+    `${SITE_URL}/es/`,
+    `${SITE_URL}/de/`,
+    `${SITE_URL}/ar/`,
+    `${SITE_URL}/pt/`,
+    // Ajoutez d'autres URLs importantes ici
+  ];
+
+  const postData = JSON.stringify({
+    host: new URL(SITE_URL).hostname,
+    key: INDEXNOW_KEY,
+    urlList: urls,
+  });
+
   return new Promise((resolve, reject) => {
-    // Uniquement en production
-    if (DEPLOY_CONTEXT !== 'production') {
-      console.log('⏭️  Skipping IndexNow notification (not production)');
-      return resolve({ skipped: true });
-    }
-
-    console.log('📤 Notifying IndexNow after successful deployment...');
-
-    const postData = JSON.stringify({ sitemap: true });
-
     const options = {
-      hostname: new URL(SITE_URL).hostname,
+      hostname: 'api.indexnow.org',
       port: 443,
-      path: '/api/indexnow',
+      path: '/indexnow',
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         'Content-Length': Buffer.byteLength(postData),
       },
     };
@@ -44,31 +65,26 @@ function notifyIndexNow() {
       });
 
       res.on('end', () => {
-        try {
-          const result = JSON.parse(data);
-          if (res.statusCode === 200 && result.success) {
-            console.log('✅ IndexNow notification successful:', result.message);
-            resolve(result);
-          } else {
-            console.error('❌ IndexNow notification failed:', result.message || data);
-            reject(new Error(result.message || 'Unknown error'));
-          }
-        } catch (error) {
-          console.error('❌ Failed to parse IndexNow response:', data);
-          reject(error);
+        if (res.statusCode === 200 || res.statusCode === 202) {
+          console.log(`✅ IndexNow notification sent (${res.statusCode})`);
+          console.log(`   Submitted ${urls.length} URLs`);
+          resolve({ success: true, statusCode: res.statusCode });
+        } else {
+          console.error(`❌ IndexNow failed (${res.statusCode}):`, data);
+          resolve({ success: false, statusCode: res.statusCode });
         }
       });
     });
 
     req.on('error', (error) => {
-      console.error('❌ IndexNow request failed:', error.message);
-      reject(error);
+      console.error('❌ IndexNow request error:', error.message);
+      resolve({ success: false, error: error.message });
     });
 
-    // Timeout de 30 secondes
-    req.setTimeout(30000, () => {
+    req.setTimeout(10000, () => {
       req.destroy();
-      reject(new Error('Request timeout'));
+      console.error('❌ IndexNow request timeout');
+      resolve({ success: false, error: 'timeout' });
     });
 
     req.write(postData);
@@ -77,25 +93,132 @@ function notifyIndexNow() {
 }
 
 /**
+ * Soumet le sitemap à Google Search Console
+ */
+async function notifyGoogle() {
+  if (DEPLOY_CONTEXT !== 'production') {
+    console.log('⏭️  Skipping Google notification (not production)');
+    return { skipped: true };
+  }
+
+  console.log('📤 Notifying Google Search Console...');
+
+  const sitemapUrl = `${SITE_URL}/sitemap-index.xml`;
+
+  return new Promise((resolve) => {
+    const options = {
+      hostname: 'www.google.com',
+      port: 443,
+      path: `/ping?sitemap=${encodeURIComponent(sitemapUrl)}`,
+      method: 'GET',
+    };
+
+    const req = https.request(options, (res) => {
+      if (res.statusCode === 200) {
+        console.log('✅ Google notified successfully');
+        resolve({ success: true });
+      } else {
+        console.log(`⚠️  Google response: ${res.statusCode}`);
+        resolve({ success: false, statusCode: res.statusCode });
+      }
+    });
+
+    req.on('error', (error) => {
+      console.error('❌ Google notification error:', error.message);
+      resolve({ success: false, error: error.message });
+    });
+
+    req.setTimeout(10000, () => {
+      req.destroy();
+      resolve({ success: false, error: 'timeout' });
+    });
+
+    req.end();
+  });
+}
+
+/**
+ * Soumet le sitemap à Bing
+ */
+async function notifyBing() {
+  if (DEPLOY_CONTEXT !== 'production') {
+    console.log('⏭️  Skipping Bing notification (not production)');
+    return { skipped: true };
+  }
+
+  console.log('📤 Notifying Bing Webmaster Tools...');
+
+  const sitemapUrl = `${SITE_URL}/sitemap-index.xml`;
+
+  return new Promise((resolve) => {
+    const options = {
+      hostname: 'www.bing.com',
+      port: 443,
+      path: `/ping?sitemap=${encodeURIComponent(sitemapUrl)}`,
+      method: 'GET',
+    };
+
+    const req = https.request(options, (res) => {
+      if (res.statusCode === 200) {
+        console.log('✅ Bing notified successfully');
+        resolve({ success: true });
+      } else {
+        console.log(`⚠️  Bing response: ${res.statusCode}`);
+        resolve({ success: false, statusCode: res.statusCode });
+      }
+    });
+
+    req.on('error', (error) => {
+      console.error('❌ Bing notification error:', error.message);
+      resolve({ success: false, error: error.message });
+    });
+
+    req.setTimeout(10000, () => {
+      req.destroy();
+      resolve({ success: false, error: 'timeout' });
+    });
+
+    req.end();
+  });
+}
+
+/**
  * Fonction principale
  */
 async function main() {
+  console.log('\n🚀 Running post-build script...');
+  console.log(`   Context: ${DEPLOY_CONTEXT}`);
+  console.log(`   Site URL: ${SITE_URL}`);
+  console.log(`   IndexNow Key: ${INDEXNOW_KEY ? '✅ Configured' : '❌ Missing'}\n`);
+
   try {
-    console.log('\n🚀 Running post-build script...');
-    console.log(`   Context: ${DEPLOY_CONTEXT}`);
-    console.log(`   Site URL: ${SITE_URL}\n`);
+    // Exécuter toutes les notifications en parallèle
+    const results = await Promise.allSettled([
+      notifyIndexNow(),
+      notifyGoogle(),
+      notifyBing(),
+    ]);
 
-    await notifyIndexNow();
+    console.log('\n📊 Results:');
+    results.forEach((result, index) => {
+      const names = ['IndexNow', 'Google', 'Bing'];
+      if (result.status === 'fulfilled') {
+        const status = result.value.skipped ? '⏭️  Skipped' : 
+                      result.value.success ? '✅ Success' : '⚠️  Failed';
+        console.log(`   ${names[index]}: ${status}`);
+      } else {
+        console.log(`   ${names[index]}: ❌ Error - ${result.reason}`);
+      }
+    });
 
-    console.log('\n✅ Post-build script completed successfully\n');
+    console.log('\n✅ Post-build script completed\n');
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ Post-build script failed:', error.message);
-    // Ne pas bloquer le déploiement en cas d'erreur IndexNow
-    console.log('⚠️  Deployment will continue despite IndexNow error\n');
-    process.exit(0); // Exit 0 pour ne pas bloquer le build
+    console.error('\n❌ Post-build script error:', error.message);
+    console.log('⚠️  Deployment continues despite error\n');
+    process.exit(0); // Ne pas bloquer le déploiement
   }
 }
 
-// Exécuter la fonction principale
+// Exécuter
 main();

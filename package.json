@@ -10,7 +10,6 @@
     "map": "node scripts/map-project.js"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.4",
     "@astrojs/netlify": "^6.2.2",
     "@astrojs/preact": "^4.1.0",
@@ -21,21 +20,23 @@
     "@upstash/redis": "^1.35.8",
     "@use-gesture/core": "^10.3.1",
     "astro": "^5.12.8",
+    "autoprefixer": "^10.4.21",
     "cssnano": "^7.1.2",
     "dotenv": "^17.2.3",
+    "postcss": "^8.5.6",
     "postcss-preset-env": "^10.4.0",
+    "preact": "^10.28.1",
     "react-swipeable": "^7.0.2",
     "resend": "^6.4.2",
     "sharp": "^0.34.5",
     "swiper": "^11.2.10",
-    "typescript": "^5.9.2",
-    "uuid": "^13.0.0",
     "tailwindcss": "^3.4.3",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.9.3"
   }
 }

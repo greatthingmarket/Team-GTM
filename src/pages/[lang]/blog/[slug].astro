@@ -10,12 +10,9 @@ export const prerender = true;
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
   
-  // ✅ CORRECTION : Générer UNIQUEMENT les routes pour les articles existants
-  return allPosts.map((entry) => {
-    // Extraction de la langue et du slug depuis l'ID du fichier
-    // Exemple : "fr/air-fryer-review" → lang="fr", slug="air-fryer-review"
+  return allPosts.map((entry: CollectionEntry<'blog'>) => {
     const [lang, ...slugParts] = entry.id.split('/');
-    const slug = slugParts.join('/');
+    const slug = slugParts.join('/').replace('.mdx', '');
     
     return {
       params: { lang, slug },
@@ -29,22 +26,14 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { lang } = Astro.params;
-
-// ✅ Extraction de la langue depuis l'ID du post (plus fiable)
 const [postLang] = entry.id.split('/');
 
-// ✅ Date valide
 const dateObj = new Date(entry.data.date);
 const isValidDate = !isNaN(dateObj.getTime());
 
-// Rendu du contenu
 const { Content } = await entry.render();
-
-// Traductions
 const t = useTranslations(postLang);
 
-// Formatage de la date
 const formattedDate = isValidDate 
   ? dateObj.toLocaleDateString(postLang, {
       year: 'numeric',
@@ -79,7 +68,6 @@ const formattedDate = isValidDate
     <main class="max-w-4xl mx-auto px-4 py-16">
       <div class="flex flex-col lg:flex-row gap-12">
         
-        <!-- Contenu principal -->
         <div class="w-full lg:w-3/4">
           <div class="prose prose-lg prose-slate max-w-none 
             prose-headings:font-poppins prose-headings:font-bold prose-headings:text-slate-900
@@ -90,7 +78,6 @@ const formattedDate = isValidDate
           </div>
         </div>
 
-        <!-- Sidebar -->
         <aside class="w-full lg:w-1/4">
           <div class="sticky top-24 space-y-8">
             <div class="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8 border-2 border-primary/10">
@@ -115,20 +102,3 @@ const formattedDate = isValidDate
     </main>
   </article>
 </BaseLayout>
-
-<style is:global>
-  /* Amélioration du rendu Markdown */
-  .prose blockquote {
-    font-style: italic;
-    border-left: 4px solid #1a936f;
-    background: #f8fafc;
-    padding: 1.5rem;
-    border-radius: 0 1.5rem 1.5rem 0;
-  }
-  
-  .prose img,
-  .prose video {
-    margin-left: auto;
-    margin-right: auto;
-  }
-</style>
