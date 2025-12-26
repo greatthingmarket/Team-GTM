@@ -1,0 +1,25 @@
+---
+// src/components/Newsletter.astro
+import NewsletterForm from './NewsletterForm.jsx';
+const { t = {}, currentLang = 'en' } = Astro.props;
+const newsletter = t.newsletter ?? {};
+---
+
+<section id="newsletter" class="relative bg-gradient-to-br from-[#1a936f] to-[#147a5c] py-20 px-4 overflow-hidden">
+  <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+    <div class="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-white"></div>
+  </div>
+
+  <div class="relative max-w-4xl mx-auto text-center text-white">
+    <h2 class="text-3xl md:text-4xl font-poppins font-bold mb-4 tracking-tight">
+      {newsletter.title || "Don't Miss the Best Deals"}
+    </h2>
+    <p class="text-lg text-green-50 max-w-2xl mx-auto mb-10 font-inter">
+      {newsletter.subtitle || "Subscribe for exclusive deals and promo codes."}
+    </p>
+
+    <div class="max-w-xl mx-auto">
+      <NewsletterForm client:load t={t} currentLang={currentLang} />
+    </div>
+  </div>
+</section>

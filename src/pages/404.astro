@@ -1,0 +1,145 @@
+---
+// src/pages/404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Charger les traductions par défaut (anglais)
+const t = (await import('../i18n/en.js')).default;
+
+// Suggestions de pages populaires
+const suggestions = [
+  { 
+    icon: '🔥', 
+    title: "Today's Best Deals", 
+    href: '/en/#deals-of-day',
+    description: 'Up to 80% off on trending products'
+  },
+  { 
+    icon: '🏠', 
+    title: 'Home Gadgets', 
+    href: '/en/category/home-gadgets',
+    description: 'Kitchen, decoration, organization'
+  },
+  { 
+    icon: '📱', 
+    title: 'Tech Accessories', 
+    href: '/en/category/tech-accessories',
+    description: 'Smartphones, earbuds, gadgets'
+  },
+  { 
+    icon: '📝', 
+    title: 'Blog & Reviews', 
+    href: '/en/#blog',
+    description: 'Expert product reviews and tips'
+  },
+];
+---
+
+<BaseLayout t={t} currentLang="en" title="404 - Page Not Found" noindex={true}>
+  <!-- Section 404 avec design moderne -->
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-green-50 to-blue-50 py-20 px-4">
+    <div class="max-w-4xl w-full">
+      
+      <!-- Container principal -->
+      <div class="text-center mb-12">
+        <!-- Illustration 404 -->
+        <div class="inline-block relative mb-8">
+          <div class="text-9xl md:text-[12rem] font-bold text-primary/10 select-none">
+            404
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-6xl animate-bounce">
+              🔍
+            </div>
+          </div>
+        </div>
+        
+        <!-- Titre et description -->
+        <h1 class="text-4xl md:text-5xl font-bold text-primary mb-4 font-poppins">
+          Oops! Page Not Found
+        </h1>
+        <p class="text-xl text-gray-700 mb-2">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <p class="text-gray-600 mb-8">
+          But don't worry, we have plenty of great deals waiting for you!
+        </p>
+        
+        <!-- Boutons CTA -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <a 
+            href="/en/" 
+            class="inline-flex items-center justify-center gap-2 bg-secondary hover:bg-green-600 text-white px-8 py-3 rounded-full font-semibold transition transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <span>🏠</span>
+            <span>Back to Home</span>
+          </a>
+          <a 
+            href="/en/#deals-of-day" 
+            class="inline-flex items-center justify-center gap-2 bg-accent hover:bg-orange-600 text-white px-8 py-3 rounded-full font-semibold transition transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <span>🔥</span>
+            <span>View Hot Deals</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Suggestions de navigation -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-primary mb-6 text-center font-poppins">
+          You might be interested in:
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {suggestions.map(item => (
+            <a 
+              href={item.href}
+              class="group flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 hover:border-secondary hover:shadow-md transition-all duration-300"
+            >
+              <div class="text-3xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-primary group-hover:text-secondary transition-colors mb-1">
+                  {item.title}
+                </h3>
+                <p class="text-sm text-gray-600">
+                  {item.description}
+                </p>
+              </div>
+              <div class="text-gray-400 group-hover:text-secondary group-hover:translate-x-1 transition-all">
+                →
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Barre de recherche (optionnel - peut être activé plus tard) -->
+      <div class="mt-12 text-center">
+        <p class="text-sm text-gray-600">
+          Can't find what you're looking for? 
+          <a href="/en/#newsletter" class="text-accent hover:underline font-semibold">
+            Subscribe to our newsletter
+          </a> 
+          to never miss a deal!
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Animation de rebond pour l'icône */
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s ease-in-out infinite;
+  }
+</style>

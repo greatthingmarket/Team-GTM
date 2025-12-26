@@ -1,0 +1,23 @@
+---
+// src/components/Trust.astro
+import { Image } from 'astro:assets';
+
+// Importation des logos depuis src/assets/
+import temuLogo from '../assets/Temu.png';
+import sheinLogo from '../assets/Shein.png';
+import aliexpressLogo from '../assets/Aliexpress.png';
+import amazonLogo from '../assets/Amazon.png';
+
+const { t } = Astro.props;
+---
+
+<section class="bg-white py-12 border-b border-gray-200">
+  <div class="max-w-6xl mx-auto px-4 text-center">
+    <div class="flex flex-wrap justify-center gap-6">
+      <Image src={temuLogo} alt="Temu" height={48} class="h-8 md:h-12 w-auto object-contain" />
+      <Image src={sheinLogo} alt="Shein" height={48} class="h-8 md:h-12 w-auto object-contain" />
+      <Image src={aliexpressLogo} alt="AliExpress" height={48} class="h-8 md:h-12 w-auto object-contain" />
+      <Image src={amazonLogo} alt="Amazon" height={48} class="h-8 md:h-12 w-auto object-contain" />
+    </div>
+  </div>
+</section>

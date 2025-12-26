@@ -1,0 +1,136 @@
+---
+// src/components/Footer.astro
+import { Image } from 'astro:assets';
+
+// ✅ IMPORTATION DES ACTIFS : Indispensable pour les fichiers dans src/assets/
+import logoImg from '../assets/Great_logo.png';
+import facebookIcon from '../assets/icons/facebook.svg';
+import instagramIcon from '../assets/icons/instagram.svg';
+import pinterestIcon from '../assets/icons/pinterest.svg';
+
+const props = Astro.props ?? {};
+const t = props.t ?? {};
+const currentLang = props.currentLang ?? 'en';
+const site = props.site ?? Astro.site ?? {};
+
+const footer = t.footer ?? {};
+const currentYear = new Date().getFullYear();
+
+// Définition des liens sociaux avec les variables importées
+const socialLinks = [
+    { name: 'Facebook', url: 'https://facebook.com/greatthingmarket', icon: facebookIcon },
+    { name: 'Instagram', url: 'https://instagram.com/greatthingmarket', icon: instagramIcon },
+    { name: 'Pinterest', url: 'https://pinterest.com/greatthingmarket', icon: pinterestIcon },
+];
+---
+
+<footer class="bg-[#111827] text-white py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 footer-container">
+    
+    <div class="footer-col-1 md:col-span-1">
+      <a href={`/${currentLang}/`} class="flex items-center gap-2 mb-3 footer-logo-title font-poppins text-xl font-bold text-primary hover:text-secondary transition">
+        {/* ✅ UTILISATION DU COMPOSANT <Image /> POUR LE LOGO */}
+        <Image 
+            src={logoImg} 
+            alt="Logo" 
+            width={32} 
+            height={32} 
+            class="rounded-full" 
+        />
+        <span>{t.logo || 'Great Thing Market'}</span>
+      </a>
+      
+      <p class="footer-description mt-3 text-sm text-white/70">
+        {footer.description || "The blog that finds you the best deals on the web. Curated picks, tested and approved, always at smart prices."}
+      </p>
+      
+      <div class="mt-6">
+        <h4 class="font-semibold mb-3 text-white">
+          {footer.partnersTitle || 'Follow us'}
+        </h4>
+        
+        <div class="flex space-x-3">
+          {socialLinks.map((link) => (
+             <a 
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Follow us on ${link.name}`}
+                class="transition hover:opacity-80" 
+             >
+                {/* ✅ UTILISATION DE .src : Les fichiers SVG importés sont des objets */}
+                <img 
+                    src={link.icon.src} 
+                    alt={link.name} 
+                    class="w-6 h-6" 
+                    width="24"
+                    height="24"
+                />
+             </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-col-2 md:col-span-1">
+      <h4 class="font-semibold mb-4 text-white">
+        {footer.linksTitle || 'Useful Links'}
+      </h4>
+      <ul class="space-y-1 text-white/80 text-sm">
+        <li>
+          <a href={`/${currentLang}/about`} class="hover:underline hover:text-secondary transition">
+            {footer.links?.about || 'About us'}
+          </a>
+        </li>
+        <li>
+          <a href={`/${currentLang}/contact`} class="hover:underline hover:text-secondary transition">
+            {footer.links?.contact || 'Contact'}
+          </a>
+        </li>
+        <li>
+          <a href={`/${currentLang}/blog`} class="hover:underline hover:text-secondary transition">
+            {t.nav?.blog || 'Blog'}
+          </a>
+        </li>
+        <li>
+          <a href={`/${currentLang}/#deals-of-day`} class="hover:underline hover:text-secondary transition">
+            {t.nav?.flashDeals || 'Flash Deals'}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer-col-3 md:col-span-1">
+      <h4 class="font-semibold mb-4 text-white">
+        {footer.legalTitle || 'Legal'}
+      </h4>
+      <ul class="space-y-1 text-white/80 text-sm">
+        <li><a href="/en/terms" class="hover:underline hover:text-secondary transition">{footer.legal?.terms ?? 'Terms & Conditions'}</a></li>
+        <li><a href="/en/privacy" class="hover:underline hover:text-secondary transition">{footer.legal?.privacy ?? 'Privacy Policy'}</a></li>
+        <li><a href="/en/affiliate-disclosure" class="hover:underline hover:text-secondary transition">{footer.legal?.disclosure ?? 'Affiliate Disclosure'}</a></li>
+        <li><a href="/en/contact" class="hover:underline hover:text-secondary transition">Support</a></li>
+      </ul>
+      <p class="text-xs text-white/50 italic mt-3">Legal pages available in English only</p>
+    </div>
+    
+    <div class="md:col-span-1">
+      <h4 class="font-semibold mb-4 text-white">
+        {t.newsletter?.title || 'Exclusive Deals'}
+      </h4>
+      <p class="text-sm text-white/70">
+        {t.newsletter?.subtitle || "Up to 80% off + secret promo codes"}
+      </p>
+      <a 
+          href={`/${currentLang}/#newsletter`}
+          class="inline-block bg-secondary hover:bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-full mt-3 transition"
+        >
+          {t.newsletter?.button || "I want the deals"}
+        </a>
+    </div>
+
+  </div>
+
+  <div class="border-t border-white/20 mt-10 pt-4 text-center text-xs text-white/60 font-inter max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {(footer.copyright ?? '© {year} Great Thing Market. All rights reserved.').replace("{year}", currentYear.toString())}
+  </div>
+</footer>

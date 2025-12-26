@@ -1,0 +1,47 @@
+# robots.txt pour Great Thing Market
+# https://greatthingmarket.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# ✅ CORRECTIF : Autoriser les pages /confirm (importantes pour UX)
+# On bloque seulement les tokens dans les logs des moteurs de recherche
+Allow: /*/confirm
+
+# Sitemaps
+Sitemap: https://greatthingmarket.com/sitemap.xml
+
+# Pages à ne pas indexer (API uniquement)
+Disallow: /api/
+
+# Fichiers techniques à exclure
+Disallow: /_astro/
+Disallow: /admin/
+Disallow: /*.json$
+
+# Crawl delay pour les bots agressifs
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Bots malveillants à bloquer
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Autoriser explicitement les bons bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# ✅ NOTE : Les pages /*/confirm sont désormais crawlables
+# mais avec noindex dans le <head> pour éviter l'indexation

@@ -1,0 +1,55 @@
+---
+// src/components/GoogleAnalytics.astro
+// ✅ Composant GA4 optimisé pour Astro avec gestion environnement
+
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+
+// ⚠️ Ne charge pas GA4 en développement pour éviter la pollution des données
+const isDev = import.meta.env.DEV;
+
+// Si pas de Measurement ID configuré, ne rien faire
+if (!GA_MEASUREMENT_ID) {
+  console.warn('⚠️ GA4 Measurement ID not configured. Set PUBLIC_GA_MEASUREMENT_ID in .env');
+}
+---
+
+{!isDev && GA_MEASUREMENT_ID && (
+  <>
+    <!-- Google Analytics 4 (GA4) -->
+    <script 
+      is:inline 
+      async 
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+    ></script>
+    
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      
+      // Configuration de base GA4
+      gtag('config', GA_MEASUREMENT_ID, {
+        // Respect de la vie privée (RGPD)
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=None;Secure',
+        // Performance
+        send_page_view: true,
+      });
+
+      // ✅ Support pour Astro View Transitions
+      document.addEventListener('astro:page-load', () => {
+        gtag('config', GA_MEASUREMENT_ID, {
+          page_path: window.location.pathname,
+        });
+      });
+    </script>
+  </>
+)}
+
+{isDev && (
+  <script is:inline>
+    console.log('🚧 GA4 disabled in development mode');
+  </script>
+)}

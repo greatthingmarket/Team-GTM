@@ -1,0 +1,412 @@
+---
+// src/pages/[lang]/contact.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+type Locale = 'en' | 'fr' | 'es' | 'de' | 'ar' | 'pt';
+
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+  return locales.map(lang => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// Charger les traductions
+const translations: Record<Locale, () => Promise<any>> = {
+  en: () => import('../../i18n/en.js'),
+  fr: () => import('../../i18n/fr.js'),
+  es: () => import('../../i18n/es.js'),
+  de: () => import('../../i18n/de.js'),
+  ar: () => import('../../i18n/ar.js'),
+  pt: () => import('../../i18n/pt.js'),
+};
+
+const t = (await translations[lang]()).default;
+
+// Contenu multilingue
+const contactContent = {
+  en: {
+    title: "Contact Us",
+    subtitle: "Have a question or want to partner with us? We'd love to hear from you!",
+    email: "Email",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "Response Time",
+    responseText: "We typically respond within 24-48 hours",
+    social: "Follow Us",
+    businessInquiries: "Business Inquiries",
+    businessText: "For partnerships, sponsorships, or business proposals",
+    businessEmail: "business@greatthingmarket.com",
+    support: "Customer Support",
+    supportText: "For questions about deals, products, or your subscription",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "Frequently Asked Questions",
+    faqItems: [
+      {
+        q: "How do I unsubscribe from the newsletter?",
+        a: "Every email contains an unsubscribe link at the bottom. Click it to instantly opt out."
+      },
+      {
+        q: "Do you test all products you recommend?",
+        a: "We personally test most products. For some items, we rely on trusted reviews and extensive research."
+      },
+      {
+        q: "How do affiliate links work?",
+        a: "When you purchase through our links, we earn a small commission at no extra cost to you. This helps us keep the site running."
+      },
+      {
+        q: "Can I submit a deal to be featured?",
+        a: "Yes! Email us at deals@greatthingmarket.com with product details and why it's a great deal."
+      }
+    ]
+  },
+  fr: {
+    title: "Contactez-Nous",
+    subtitle: "Vous avez une question ou souhaitez collaborer avec nous ? Nous serions ravis de vous entendre !",
+    email: "Email",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "Temps de Réponse",
+    responseText: "Nous répondons généralement sous 24 à 48 heures",
+    social: "Suivez-Nous",
+    businessInquiries: "Demandes Commerciales",
+    businessText: "Pour les partenariats, parrainages ou propositions commerciales",
+    businessEmail: "business@greatthingmarket.com",
+    support: "Support Client",
+    supportText: "Pour des questions sur les offres, produits ou votre abonnement",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "Questions Fréquentes",
+    faqItems: [
+      {
+        q: "Comment me désinscrire de la newsletter ?",
+        a: "Chaque email contient un lien de désinscription en bas. Cliquez dessus pour vous désabonner instantanément."
+      },
+      {
+        q: "Testez-vous tous les produits que vous recommandez ?",
+        a: "Nous testons personnellement la plupart des produits. Pour certains articles, nous nous appuyons sur des avis fiables et des recherches approfondies."
+      },
+      {
+        q: "Comment fonctionnent les liens d'affiliation ?",
+        a: "Lorsque vous achetez via nos liens, nous gagnons une petite commission sans frais supplémentaires pour vous. Cela nous aide à maintenir le site."
+      },
+      {
+        q: "Puis-je soumettre une offre à présenter ?",
+        a: "Oui ! Envoyez-nous un email à deals@greatthingmarket.com avec les détails du produit et pourquoi c'est une bonne affaire."
+      }
+    ]
+  },
+  es: {
+    title: "Contáctanos",
+    subtitle: "¿Tienes una pregunta o quieres asociarte con nosotros? ¡Nos encantaría saber de ti!",
+    email: "Correo Electrónico",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "Tiempo de Respuesta",
+    responseText: "Normalmente respondemos en 24-48 horas",
+    social: "Síguenos",
+    businessInquiries: "Consultas Comerciales",
+    businessText: "Para asociaciones, patrocinios o propuestas comerciales",
+    businessEmail: "business@greatthingmarket.com",
+    support: "Atención al Cliente",
+    supportText: "Para preguntas sobre ofertas, productos o tu suscripción",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "Preguntas Frecuentes",
+    faqItems: [
+      {
+        q: "¿Cómo me doy de baja del boletín?",
+        a: "Cada correo contiene un enlace para darse de baja en la parte inferior. Haz clic para cancelar instantáneamente."
+      },
+      {
+        q: "¿Prueban todos los productos que recomiendan?",
+        a: "Probamos personalmente la mayoría de los productos. Para algunos artículos, nos basamos en reseñas confiables e investigación exhaustiva."
+      },
+      {
+        q: "¿Cómo funcionan los enlaces de afiliados?",
+        a: "Cuando compras a través de nuestros enlaces, ganamos una pequeña comisión sin costo adicional para ti. Esto nos ayuda a mantener el sitio."
+      },
+      {
+        q: "¿Puedo enviar una oferta para destacar?",
+        a: "¡Sí! Envíanos un correo a deals@greatthingmarket.com con los detalles del producto y por qué es una buena oferta."
+      }
+    ]
+  },
+  de: {
+    title: "Kontaktieren Sie Uns",
+    subtitle: "Haben Sie eine Frage oder möchten Sie mit uns zusammenarbeiten? Wir würden uns freuen, von Ihnen zu hören!",
+    email: "E-Mail",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "Antwortzeit",
+    responseText: "Wir antworten in der Regel innerhalb von 24-48 Stunden",
+    social: "Folgen Sie Uns",
+    businessInquiries: "Geschäftsanfragen",
+    businessText: "Für Partnerschaften, Sponsoring oder Geschäftsvorschläge",
+    businessEmail: "business@greatthingmarket.com",
+    support: "Kundensupport",
+    supportText: "Für Fragen zu Angeboten, Produkten oder Ihrem Abonnement",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "Häufig Gestellte Fragen",
+    faqItems: [
+      {
+        q: "Wie kann ich mich vom Newsletter abmelden?",
+        a: "Jede E-Mail enthält unten einen Abmeldelink. Klicken Sie darauf, um sich sofort abzumelden."
+      },
+      {
+        q: "Testen Sie alle Produkte, die Sie empfehlen?",
+        a: "Wir testen die meisten Produkte persönlich. Bei einigen Artikeln verlassen wir uns auf vertrauenswürdige Bewertungen und umfangreiche Recherchen."
+      },
+      {
+        q: "Wie funktionieren Affiliate-Links?",
+        a: "Wenn Sie über unsere Links kaufen, erhalten wir eine kleine Provision ohne zusätzliche Kosten für Sie. Dies hilft uns, die Website zu betreiben."
+      },
+      {
+        q: "Kann ich ein Angebot zur Veröffentlichung einreichen?",
+        a: "Ja! Senden Sie uns eine E-Mail an deals@greatthingmarket.com mit Produktdetails und warum es ein großartiges Angebot ist."
+      }
+    ]
+  },
+  ar: {
+    title: "اتصل بنا",
+    subtitle: "هل لديك سؤال أو تريد الشراكة معنا؟ نود أن نسمع منك!",
+    email: "البريد الإلكتروني",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "وقت الاستجابة",
+    responseText: "عادة ما نرد في غضون 24-48 ساعة",
+    social: "تابعنا",
+    businessInquiries: "الاستفسارات التجارية",
+    businessText: "للشراكات أو الرعاية أو المقترحات التجارية",
+    businessEmail: "business@greatthingmarket.com",
+    support: "دعم العملاء",
+    supportText: "للأسئلة حول العروض أو المنتجات أو اشتراكك",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "الأسئلة الشائعة",
+    faqItems: [
+      {
+        q: "كيف يمكنني إلغاء الاشتراك في النشرة الإخبارية؟",
+        a: "يحتوي كل بريد إلكتروني على رابط إلغاء الاشتراك في الأسفل. انقر عليه لإلغاء الاشتراك على الفور."
+      },
+      {
+        q: "هل تختبرون جميع المنتجات التي توصون بها؟",
+        a: "نختبر معظم المنتجات شخصيًا. بالنسبة لبعض العناصر، نعتمد على مراجعات موثوقة وأبحاث شاملة."
+      },
+      {
+        q: "كيف تعمل الروابط التابعة؟",
+        a: "عندما تشتري من خلال روابطنا، نحصل على عمولة صغيرة دون أي تكلفة إضافية عليك. هذا يساعدنا في تشغيل الموقع."
+      },
+      {
+        q: "هل يمكنني إرسال صفقة لعرضها؟",
+        a: "نعم! أرسل لنا بريدًا إلكترونيًا على deals@greatthingmarket.com مع تفاصيل المنتج ولماذا هي صفقة رائعة."
+      }
+    ]
+  },
+  pt: {
+    title: "Entre em Contato",
+    subtitle: "Tem uma pergunta ou quer fazer parceria conosco? Adoraríamos ouvir de você!",
+    email: "Email",
+    emailAddress: "contact@greatthingmarket.com",
+    responseTime: "Tempo de Resposta",
+    responseText: "Normalmente respondemos em 24-48 horas",
+    social: "Siga-nos",
+    businessInquiries: "Consultas Comerciais",
+    businessText: "Para parcerias, patrocínios ou propostas comerciais",
+    businessEmail: "business@greatthingmarket.com",
+    support: "Suporte ao Cliente",
+    supportText: "Para perguntas sobre ofertas, produtos ou sua assinatura",
+    supportEmail: "support@greatthingmarket.com",
+    faq: "Perguntas Frequentes",
+    faqItems: [
+      {
+        q: "Como faço para cancelar a assinatura da newsletter?",
+        a: "Cada email contém um link de cancelamento na parte inferior. Clique nele para cancelar instantaneamente."
+      },
+      {
+        q: "Vocês testam todos os produtos que recomendam?",
+        a: "Testamos pessoalmente a maioria dos produtos. Para alguns itens, confiamos em avaliações confiáveis e pesquisas extensas."
+      },
+      {
+        q: "Como funcionam os links de afiliados?",
+        a: "Quando você compra através de nossos links, ganhamos uma pequena comissão sem custo adicional para você. Isso nos ajuda a manter o site."
+      },
+      {
+        q: "Posso enviar uma oferta para ser destacada?",
+        a: "Sim! Envie-nos um email para deals@greatthingmarket.com com detalhes do produto e por que é uma ótima oferta."
+      }
+    ]
+  }
+};
+
+const content = contactContent[lang];
+---
+
+<BaseLayout t={t} currentLang={lang} title={`${content.title} - Great Thing Market`}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-green-50 to-blue-50 py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <div class="text-6xl mb-6">📧</div>
+      <h1 class="text-5xl md:text-6xl font-bold text-primary mb-6 font-poppins">
+        {content.title}
+      </h1>
+      <p class="text-xl text-gray-700">
+        {content.subtitle}
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Methods Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- General Contact -->
+        <div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition">
+          <div class="text-4xl mb-4">📧</div>
+          <h3 class="text-2xl font-bold text-primary mb-3 font-poppins">
+            {content.email}
+          </h3>
+          <a 
+            href={`mailto:${content.emailAddress}`}
+            class="text-accent hover:underline text-lg font-medium block mb-4"
+          >
+            {content.emailAddress}
+          </a>
+          <div class="pt-4 border-t border-orange-200">
+            <p class="text-sm font-semibold text-primary mb-2">
+              {content.responseTime}
+            </p>
+            <p class="text-sm text-gray-600">
+              {content.responseText}
+            </p>
+          </div>
+        </div>
+
+        <!-- Business Inquiries -->
+        <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition">
+          <div class="text-4xl mb-4">💼</div>
+          <h3 class="text-2xl font-bold text-primary mb-3 font-poppins">
+            {content.businessInquiries}
+          </h3>
+          <p class="text-gray-700 mb-4 text-sm">
+            {content.businessText}
+          </p>
+          <a 
+            href={`mailto:${content.businessEmail}`}
+            class="text-accent hover:underline text-lg font-medium block"
+          >
+            {content.businessEmail}
+          </a>
+        </div>
+
+        <!-- Customer Support -->
+        <div class="bg-gradient-to-br from-green-50 to-orange-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition">
+          <div class="text-4xl mb-4">🤝</div>
+          <h3 class="text-2xl font-bold text-primary mb-3 font-poppins">
+            {content.support}
+          </h3>
+          <p class="text-gray-700 mb-4 text-sm">
+            {content.supportText}
+          </p>
+          <a 
+            href={`mailto:${content.supportEmail}`}
+            class="text-accent hover:underline text-lg font-medium block"
+          >
+            {content.supportEmail}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Media Section -->
+  <section class="py-16 bg-gradient-to-br from-primary to-secondary text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-8 font-poppins">
+        {content.social}
+      </h2>
+      <div class="flex justify-center gap-8">
+        <a 
+          href="https://facebook.com/greatthingmarket"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col items-center gap-2 hover:scale-110 transition-transform"
+        >
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+            <img src="/assets/icons/facebook.svg" alt="Facebook" class="w-8 h-8 invert" />
+          </div>
+          <span class="text-sm font-medium">Facebook</span>
+        </a>
+        <a 
+          href="https://instagram.com/greatthingmarket"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col items-center gap-2 hover:scale-110 transition-transform"
+        >
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+            <img src="/assets/icons/instagram.svg" alt="Instagram" class="w-8 h-8 invert" />
+          </div>
+          <span class="text-sm font-medium">Instagram</span>
+        </a>
+        <a 
+          href="https://pinterest.com/greatthingmarket"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col items-center gap-2 hover:scale-110 transition-transform"
+        >
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+            <img src="/assets/icons/pinterest.svg" alt="Pinterest" class="w-8 h-8 invert" />
+          </div>
+          <span class="text-sm font-medium">Pinterest</span>
+        </a>
+        <a 
+          href="https://youtube.com/greatthingmarket"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col items-center gap-2 hover:scale-110 transition-transform"
+        >
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+            <img src="/assets/icons/youtube.svg" alt="YouTube" class="w-8 h-8 invert" />
+          </div>
+          <span class="text-sm font-medium">YouTube</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-primary mb-12 text-center font-poppins">
+        {content.faq}
+      </h2>
+      <div class="space-y-6">
+        {content.faqItems.map((item: any) => (
+          <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border-2 border-gray-100 hover:border-secondary transition">
+            <h3 class="text-xl font-bold text-primary mb-3">
+              {item.q}
+            </h3>
+            <p class="text-gray-700 leading-relaxed">
+              {item.a}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-gradient-to-br from-orange-50 to-green-50">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-primary mb-6 font-poppins">
+        Still Have Questions?
+      </h2>
+      <p class="text-lg text-gray-700 mb-8">
+        Don't hesitate to reach out. We're here to help!
+      </p>
+      <a 
+        href={`mailto:${content.emailAddress}`}
+        class="inline-block bg-accent hover:bg-orange-600 text-white font-semibold px-10 py-4 rounded-full transition transform hover:scale-105 shadow-lg text-lg"
+      >
+        Send Us an Email →
+      </a>
+    </div>
+  </section>
+</BaseLayout>

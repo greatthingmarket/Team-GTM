@@ -1,0 +1,235 @@
+---
+// src/pages/[lang]/privacy.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+type Locale = 'en' | 'fr' | 'es' | 'de' | 'ar' | 'pt';
+
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+  return locales.map(lang => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// Charger les traductions
+const translations: Record<Locale, () => Promise<any>> = {
+  en: () => import('../../i18n/en.js'),
+  fr: () => import('../../i18n/fr.js'),
+  es: () => import('../../i18n/es.js'),
+  de: () => import('../../i18n/de.js'),
+  ar: () => import('../../i18n/ar.js'),
+  pt: () => import('../../i18n/pt.js'),
+};
+
+const t = (await translations[lang]()).default;
+
+const lastUpdated = "November 18, 2025";
+---
+
+<BaseLayout t={t} currentLang={lang} title="Privacy Policy - Great Thing Market" noindex={true}>
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="text-5xl mb-6">🔒</div>
+      <h1 class="text-5xl md:text-6xl font-bold text-primary mb-4 font-poppins">
+        Privacy Policy
+      </h1>
+      <p class="text-gray-600">
+        <strong>Last Updated:</strong> {lastUpdated}
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div class="prose prose-lg max-w-none">
+      
+      <!-- Introduction -->
+      <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 mb-8 border-2 border-green-200">
+        <p class="text-lg text-gray-700 mb-0">
+          At Great Thing Market, we respect your privacy and are committed to protecting your personal data. 
+          This privacy policy explains how we collect, use, and safeguard your information.
+        </p>
+      </div>
+
+      <!-- Section 1 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">1. Information We Collect</h2>
+      
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">1.1 Personal Information</h3>
+      <p class="text-gray-700 leading-relaxed">
+        When you subscribe to our newsletter, we collect:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>Email address (required)</li>
+        <li>First name (optional)</li>
+        <li>Language preference</li>
+        <li>Subscription date and time</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">1.2 Automated Information</h3>
+      <p class="text-gray-700 leading-relaxed">
+        We automatically collect certain information when you visit our website:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>IP address</li>
+        <li>Browser type and version</li>
+        <li>Device information</li>
+        <li>Pages visited and time spent</li>
+        <li>Referral source</li>
+      </ul>
+
+      <!-- Section 2 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">2. How We Use Your Information</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We use your personal information for the following purposes:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Newsletter Delivery:</strong> To send you exclusive deals, product recommendations, and promotional content</li>
+        <li><strong>Personalization:</strong> To customize content based on your language preference</li>
+        <li><strong>Analytics:</strong> To understand how visitors use our website and improve user experience</li>
+        <li><strong>Communication:</strong> To respond to your inquiries and provide customer support</li>
+        <li><strong>Legal Compliance:</strong> To comply with applicable laws and regulations</li>
+      </ul>
+
+      <!-- Section 3 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">3. Data Security</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We implement industry-standard security measures to protect your personal information:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Encryption:</strong> All data transmission is secured with SSL/TLS encryption</li>
+        <li><strong>Secure Storage:</strong> Your data is stored in secure, access-controlled databases (Supabase)</li>
+        <li><strong>Limited Access:</strong> Only authorized personnel have access to personal data</li>
+        <li><strong>Regular Audits:</strong> We conduct regular security audits to identify and address vulnerabilities</li>
+      </ul>
+
+      <div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 my-6">
+        <p class="text-sm text-gray-700 mb-0">
+          <strong>⚠️ Important:</strong> While we strive to protect your data, no method of transmission over 
+          the internet is 100% secure. We cannot guarantee absolute security.
+        </p>
+      </div>
+
+      <!-- Section 4 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">4. Cookies and Tracking</h2>
+      
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">4.1 Essential Cookies</h3>
+      <p class="text-gray-700 leading-relaxed">
+        We use essential cookies to ensure the website functions properly. These cannot be disabled.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">4.2 Analytics Cookies</h3>
+      <p class="text-gray-700 leading-relaxed">
+        We use Google Analytics to understand how visitors interact with our site. This helps us improve user experience.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">4.3 Affiliate Cookies</h3>
+      <p class="text-gray-700 leading-relaxed">
+        When you click on affiliate links (to Temu, Amazon, etc.), cookies are set to track referrals for commission purposes.
+      </p>
+
+      <!-- Section 5 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">5. Third-Party Services</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We work with trusted third-party services to operate our website:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Supabase:</strong> Database and authentication services</li>
+        <li><strong>Resend:</strong> Email delivery service for newsletters</li>
+        <li><strong>Netlify:</strong> Website hosting and deployment</li>
+        <li><strong>Google Analytics:</strong> Website traffic analysis</li>
+        <li><strong>Affiliate Networks:</strong> Temu, Amazon, AliExpress, Shein</li>
+      </ul>
+      <p class="text-gray-700 leading-relaxed mt-4">
+        These services have their own privacy policies. We recommend reviewing them:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><a href="https://supabase.com/privacy" target="_blank" rel="noopener" class="text-accent hover:underline">Supabase Privacy Policy</a></li>
+        <li><a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener" class="text-accent hover:underline">Resend Privacy Policy</a></li>
+        <li><a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener" class="text-accent hover:underline">Netlify Privacy Policy</a></li>
+        <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="text-accent hover:underline">Google Privacy Policy</a></li>
+      </ul>
+
+      <!-- Section 6 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">6. Your Rights (GDPR & CCPA)</h2>
+      <p class="text-gray-700 leading-relaxed">
+        You have the following rights regarding your personal data:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Right to Access:</strong> Request a copy of your personal data</li>
+        <li><strong>Right to Rectification:</strong> Correct inaccurate or incomplete data</li>
+        <li><strong>Right to Erasure:</strong> Request deletion of your data ("right to be forgotten")</li>
+        <li><strong>Right to Restrict Processing:</strong> Limit how we use your data</li>
+        <li><strong>Right to Data Portability:</strong> Receive your data in a portable format</li>
+        <li><strong>Right to Object:</strong> Object to certain types of processing (e.g., marketing)</li>
+        <li><strong>Right to Withdraw Consent:</strong> Unsubscribe from emails at any time</li>
+      </ul>
+      <p class="text-gray-700 leading-relaxed mt-4">
+        To exercise any of these rights, email us at: 
+        <a href="mailto:contact@greatthingmarket.com" class="text-accent hover:underline font-semibold">
+          contact@greatthingmarket.com
+        </a>
+      </p>
+
+      <!-- Section 7 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">7. Children's Privacy</h2>
+      <p class="text-gray-700 leading-relaxed">
+        Our website is not intended for children under 13 years of age. We do not knowingly collect 
+        personal information from children. If you believe we have inadvertently collected data from a child, 
+        please contact us immediately.
+      </p>
+
+      <!-- Section 8 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">8. International Data Transfers</h2>
+      <p class="text-gray-700 leading-relaxed">
+        Your data may be transferred to and processed in countries outside your residence. 
+        We ensure appropriate safeguards are in place to protect your data in accordance with applicable laws.
+      </p>
+
+      <!-- Section 9 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">9. Data Retention</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We retain your personal data only as long as necessary for the purposes outlined in this policy:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Active Subscribers:</strong> Data retained indefinitely while subscribed</li>
+        <li><strong>Unsubscribed Users:</strong> Data deleted within 30 days of unsubscribing</li>
+        <li><strong>Inactive Accounts:</strong> Data may be deleted after 2 years of inactivity</li>
+      </ul>
+
+      <!-- Section 10 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">10. Changes to This Policy</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We may update this privacy policy from time to time. Changes will be posted on this page with 
+        an updated "Last Updated" date. We encourage you to review this policy periodically.
+      </p>
+
+      <!-- Section 11 -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">11. Contact Us</h2>
+      <p class="text-gray-700 leading-relaxed">
+        If you have any questions or concerns about this privacy policy, please contact us:
+      </p>
+      <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 mt-6 border-2 border-green-200">
+        
+        <p class="text-lg mb-0">
+          <strong>General Inquiries:</strong> 
+          <a href="mailto:contact@greatthingmarket.com" class="text-accent hover:underline font-semibold">
+            contact@greatthingmarket.com
+          </a>
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a 
+          href={`/${lang}/`}
+          class="inline-block bg-secondary hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full transition transform hover:scale-105"
+        >
+          ← Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

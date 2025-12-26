@@ -1,0 +1,310 @@
+---
+// src/pages/[lang]/about.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+type Locale = 'en' | 'fr' | 'es' | 'de' | 'ar' | 'pt';
+
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+  return locales.map(lang => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// Charger les traductions
+const translations: Record<Locale, () => Promise<any>> = {
+  en: () => import('../../i18n/en.js'),
+  fr: () => import('../../i18n/fr.js'),
+  es: () => import('../../i18n/es.js'),
+  de: () => import('../../i18n/de.js'),
+  ar: () => import('../../i18n/ar.js'),
+  pt: () => import('../../i18n/pt.js'),
+};
+
+const t = (await translations[lang]()).default;
+
+// Contenu multilingue pour About
+const aboutContent = {
+  en: {
+    title: "About Great Thing Market",
+    subtitle: "Your trusted source for the best deals on the web",
+    mission: "Our Mission",
+    missionText: "To help millions of people save money by finding and sharing the best deals on quality products from trusted platforms like Temu, Amazon, AliExpress, and Shein.",
+    whatWeDo: "What We Do",
+    doItems: [
+      "Test products personally before recommending them",
+      "Negotiate exclusive discount codes for our subscribers",
+      "Track price drops and flash sales 24/7 with advanced algorithms",
+      "Write honest, detailed reviews based on real-world testing",
+      "Compare prices across multiple platforms to ensure you get the best deal"
+    ],
+    team: "Our Team",
+    teamText: "We're a passionate team of deal hunters, product testers, and tech enthusiasts dedicated to making smart shopping accessible to everyone.",
+    transparency: "Transparency & Trust",
+    transparencyText: "We earn commissions from affiliate links at no extra cost to you. This helps us maintain the site, test more products, and continue finding great deals. Our reviews remain 100% honest and unbiased.",
+    values: "Our Values",
+    valueItems: [
+      { icon: "✅", title: "Honesty", text: "We only recommend products we've tested or genuinely believe in" },
+      { icon: "🔍", title: "Transparency", text: "All affiliate relationships are clearly disclosed" },
+      { icon: "💰", title: "Value", text: "We prioritize quality products at the best prices" },
+      { icon: "⚡", title: "Speed", text: "Flash deals are shared immediately so you never miss out" }
+    ],
+    cta: "Join Our Community",
+    ctaText: "Get exclusive deals delivered to your inbox"
+  },
+  fr: {
+    title: "À Propos de Great Thing Market",
+    subtitle: "Votre source de confiance pour les meilleures offres du web",
+    mission: "Notre Mission",
+    missionText: "Aider des millions de personnes à économiser de l'argent en trouvant et partageant les meilleures offres sur des produits de qualité provenant de plateformes de confiance comme Temu, Amazon, AliExpress et Shein.",
+    whatWeDo: "Ce Que Nous Faisons",
+    doItems: [
+      "Tester personnellement les produits avant de les recommander",
+      "Négocier des codes de réduction exclusifs pour nos abonnés",
+      "Suivre les baisses de prix et les ventes flash 24h/24 et 7j/7",
+      "Rédiger des avis honnêtes et détaillés basés sur des tests réels",
+      "Comparer les prix sur plusieurs plateformes pour garantir la meilleure offre"
+    ],
+    team: "Notre Équipe",
+    teamText: "Nous sommes une équipe passionnée de chasseurs de bonnes affaires, testeurs de produits et passionnés de technologie dédiés à rendre le shopping intelligent accessible à tous.",
+    transparency: "Transparence & Confiance",
+    transparencyText: "Nous gagnons des commissions sur les liens d'affiliation sans frais supplémentaires pour vous. Cela nous aide à maintenir le site, tester plus de produits et continuer à trouver de bonnes affaires. Nos avis restent 100% honnêtes et impartiaux.",
+    values: "Nos Valeurs",
+    valueItems: [
+      { icon: "✅", title: "Honnêteté", text: "Nous recommandons uniquement les produits que nous avons testés" },
+      { icon: "🔍", title: "Transparence", text: "Toutes les relations d'affiliation sont clairement divulguées" },
+      { icon: "💰", title: "Valeur", text: "Nous privilégions les produits de qualité aux meilleurs prix" },
+      { icon: "⚡", title: "Rapidité", text: "Les offres flash sont partagées immédiatement" }
+    ],
+    cta: "Rejoignez Notre Communauté",
+    ctaText: "Recevez des offres exclusives dans votre boîte mail"
+  },
+  es: {
+    title: "Acerca de Great Thing Market",
+    subtitle: "Tu fuente de confianza para las mejores ofertas en la web",
+    mission: "Nuestra Misión",
+    missionText: "Ayudar a millones de personas a ahorrar dinero encontrando y compartiendo las mejores ofertas en productos de calidad de plataformas confiables como Temu, Amazon, AliExpress y Shein.",
+    whatWeDo: "Lo Que Hacemos",
+    doItems: [
+      "Probamos productos personalmente antes de recomendarlos",
+      "Negociamos códigos de descuento exclusivos para nuestros suscriptores",
+      "Rastreamos caídas de precios y ventas flash 24/7",
+      "Escribimos reseñas honestas y detalladas basadas en pruebas reales",
+      "Comparamos precios en múltiples plataformas para asegurar la mejor oferta"
+    ],
+    team: "Nuestro Equipo",
+    teamText: "Somos un equipo apasionado de cazadores de ofertas, probadores de productos y entusiastas de la tecnología dedicados a hacer que las compras inteligentes sean accesibles para todos.",
+    transparency: "Transparencia y Confianza",
+    transparencyText: "Ganamos comisiones de enlaces de afiliados sin costo adicional para ti. Esto nos ayuda a mantener el sitio, probar más productos y seguir encontrando grandes ofertas. Nuestras reseñas siguen siendo 100% honestas e imparciales.",
+    values: "Nuestros Valores",
+    valueItems: [
+      { icon: "✅", title: "Honestidad", text: "Solo recomendamos productos que hemos probado" },
+      { icon: "🔍", title: "Transparencia", text: "Todas las relaciones de afiliados se divulgan claramente" },
+      { icon: "💰", title: "Valor", text: "Priorizamos productos de calidad a los mejores precios" },
+      { icon: "⚡", title: "Velocidad", text: "Las ofertas flash se comparten de inmediato" }
+    ],
+    cta: "Únete a Nuestra Comunidad",
+    ctaText: "Recibe ofertas exclusivas en tu bandeja de entrada"
+  },
+  de: {
+    title: "Über Great Thing Market",
+    subtitle: "Ihre vertrauenswürdige Quelle für die besten Angebote im Web",
+    mission: "Unsere Mission",
+    missionText: "Millionen von Menschen helfen, Geld zu sparen, indem wir die besten Angebote für Qualitätsprodukte von vertrauenswürdigen Plattformen wie Temu, Amazon, AliExpress und Shein finden und teilen.",
+    whatWeDo: "Was Wir Tun",
+    doItems: [
+      "Produkte persönlich testen, bevor wir sie empfehlen",
+      "Exklusive Rabattcodes für unsere Abonnenten aushandeln",
+      "Preissenkungen und Flash-Sales rund um die Uhr verfolgen",
+      "Ehrliche, detaillierte Bewertungen basierend auf echten Tests schreiben",
+      "Preise auf mehreren Plattformen vergleichen, um das beste Angebot zu gewährleisten"
+    ],
+    team: "Unser Team",
+    teamText: "Wir sind ein leidenschaftliches Team von Deal-Jägern, Produkttestern und Tech-Enthusiasten, die sich dafür einsetzen, intelligentes Einkaufen für alle zugänglich zu machen.",
+    transparency: "Transparenz & Vertrauen",
+    transparencyText: "Wir verdienen Provisionen aus Affiliate-Links ohne zusätzliche Kosten für Sie. Dies hilft uns, die Website zu pflegen, mehr Produkte zu testen und weiterhin großartige Angebote zu finden. Unsere Bewertungen bleiben zu 100% ehrlich und unvoreingenommen.",
+    values: "Unsere Werte",
+    valueItems: [
+      { icon: "✅", title: "Ehrlichkeit", text: "Wir empfehlen nur Produkte, die wir getestet haben" },
+      { icon: "🔍", title: "Transparenz", text: "Alle Affiliate-Beziehungen werden klar offengelegt" },
+      { icon: "💰", title: "Wert", text: "Wir priorisieren Qualitätsprodukte zu besten Preisen" },
+      { icon: "⚡", title: "Geschwindigkeit", text: "Flash-Angebote werden sofort geteilt" }
+    ],
+    cta: "Treten Sie Unserer Community Bei",
+    ctaText: "Erhalten Sie exklusive Angebote in Ihrem Posteingang"
+  },
+  ar: {
+    title: "حول Great Thing Market",
+    subtitle: "مصدرك الموثوق لأفضل العروض على الويب",
+    mission: "مهمتنا",
+    missionText: "مساعدة الملايين من الناس على توفير المال من خلال العثور على أفضل العروض على المنتجات عالية الجودة من منصات موثوقة مثل Temu و Amazon و AliExpress و Shein ومشاركتها.",
+    whatWeDo: "ما نقوم به",
+    doItems: [
+      "اختبار المنتجات شخصيًا قبل التوصية بها",
+      "التفاوض على أكواد خصم حصرية للمشتركين",
+      "تتبع انخفاضات الأسعار والمبيعات السريعة على مدار الساعة",
+      "كتابة مراجعات صادقة ومفصلة بناءً على اختبارات حقيقية",
+      "مقارنة الأسعار عبر منصات متعددة لضمان أفضل صفقة"
+    ],
+    team: "فريقنا",
+    teamText: "نحن فريق شغوف من صائدي الصفقات ومختبري المنتجات وعشاق التكنولوجيا المتفانين في جعل التسوق الذكي متاحًا للجميع.",
+    transparency: "الشفافية والثقة",
+    transparencyText: "نحصل على عمولات من الروابط التابعة دون أي تكلفة إضافية عليك. يساعدنا هذا في صيانة الموقع واختبار المزيد من المنتجات ومواصلة العثور على صفقات رائعة. تبقى مراجعاتنا صادقة وغير متحيزة بنسبة 100٪.",
+    values: "قيمنا",
+    valueItems: [
+      { icon: "✅", title: "الصدق", text: "نوصي فقط بالمنتجات التي اختبرناها" },
+      { icon: "🔍", title: "الشفافية", text: "يتم الكشف بوضوح عن جميع العلاقات التابعة" },
+      { icon: "💰", title: "القيمة", text: "نعطي الأولوية لمنتجات عالية الجودة بأفضل الأسعار" },
+      { icon: "⚡", title: "السرعة", text: "يتم مشاركة العروض السريعة على الفور" }
+    ],
+    cta: "انضم إلى مجتمعنا",
+    ctaText: "احصل على عروض حصرية في صندوق الوارد الخاص بك"
+  },
+  pt: {
+    title: "Sobre o Great Thing Market",
+    subtitle: "Sua fonte confiável para as melhores ofertas na web",
+    mission: "Nossa Missão",
+    missionText: "Ajudar milhões de pessoas a economizar dinheiro encontrando e compartilhando as melhores ofertas em produtos de qualidade de plataformas confiáveis como Temu, Amazon, AliExpress e Shein.",
+    whatWeDo: "O Que Fazemos",
+    doItems: [
+      "Testamos produtos pessoalmente antes de recomendá-los",
+      "Negociamos códigos de desconto exclusivos para nossos assinantes",
+      "Rastreamos quedas de preço e vendas relâmpago 24/7",
+      "Escrevemos avaliações honestas e detalhadas baseadas em testes reais",
+      "Comparamos preços em múltiplas plataformas para garantir a melhor oferta"
+    ],
+    team: "Nossa Equipe",
+    teamText: "Somos uma equipe apaixonada de caçadores de ofertas, testadores de produtos e entusiastas de tecnologia dedicados a tornar as compras inteligentes acessíveis a todos.",
+    transparency: "Transparência e Confiança",
+    transparencyText: "Ganhamos comissões de links de afiliados sem custo adicional para você. Isso nos ajuda a manter o site, testar mais produtos e continuar encontrando ótimas ofertas. Nossas avaliações permanecem 100% honestas e imparciais.",
+    values: "Nossos Valores",
+    valueItems: [
+      { icon: "✅", title: "Honestidade", text: "Recomendamos apenas produtos que testamos" },
+      { icon: "🔍", title: "Transparência", text: "Todas as relações de afiliados são claramente divulgadas" },
+      { icon: "💰", title: "Valor", text: "Priorizamos produtos de qualidade aos melhores preços" },
+      { icon: "⚡", title: "Velocidade", text: "Ofertas relâmpago são compartilhadas imediatamente" }
+    ],
+    cta: "Junte-se à Nossa Comunidade",
+    ctaText: "Receba ofertas exclusivas na sua caixa de entrada"
+  }
+};
+
+const content = aboutContent[lang];
+---
+
+<BaseLayout t={t} currentLang={lang} title={`${content.title} - Great Thing Market`}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-primary to-secondary text-white py-20">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 font-poppins">
+        {content.title}
+      </h1>
+      <p class="text-xl md:text-2xl opacity-90">
+        {content.subtitle}
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-primary mb-4 font-poppins">
+          {content.mission}
+        </h2>
+        <p class="text-xl text-gray-700 leading-relaxed">
+          {content.missionText}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Do Section -->
+  <section class="py-16 bg-gradient-to-br from-orange-50 to-green-50">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-primary mb-8 text-center font-poppins">
+        {content.whatWeDo}
+      </h2>
+      <ul class="space-y-4">
+        {content.doItems.map((item: string) => (
+          <li class="flex items-start gap-4 bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition">
+            <span class="text-2xl flex-shrink-0">✅</span>
+            <span class="text-lg text-gray-700">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-primary mb-12 text-center font-poppins">
+        {content.values}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {content.valueItems.map((value: any) => (
+          <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 text-center hover:shadow-lg transition">
+            <div class="text-4xl mb-4">{value.icon}</div>
+            <h3 class="text-xl font-bold text-primary mb-2">{value.title}</h3>
+            <p class="text-gray-600 text-sm">{value.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-16 bg-gradient-to-br from-blue-50 to-orange-50">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold text-primary mb-6 font-poppins">
+        {content.team}
+      </h2>
+      <p class="text-xl text-gray-700 leading-relaxed mb-8">
+        {content.teamText}
+      </p>
+      <div class="flex justify-center gap-4 text-5xl">
+        <span>👨‍💻</span>
+        <span>👩‍💼</span>
+        <span>🧑‍🔬</span>
+        <span>👨‍🎨</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transparency Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 border-2 border-orange-200">
+        <h2 class="text-3xl font-bold text-primary mb-4 font-poppins">
+          {content.transparency}
+        </h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          {content.transparencyText}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-br from-primary to-secondary text-white">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-6 font-poppins">
+        {content.cta}
+      </h2>
+      <p class="text-xl mb-8 opacity-90">
+        {content.ctaText}
+      </p>
+      <a 
+        href={`/${lang}/#newsletter`}
+        class="inline-block bg-accent hover:bg-orange-600 text-white font-semibold px-10 py-4 rounded-full transition transform hover:scale-105 shadow-lg text-lg"
+      >
+        📧 Subscribe Now
+      </a>
+    </div>
+  </section>
+</BaseLayout>

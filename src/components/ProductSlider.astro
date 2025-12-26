@@ -1,0 +1,73 @@
+---
+// src/components/ProductSlider.astro
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+const { images, productTitle = "Product" } = Astro.props;
+---
+
+<div 
+  class="swiper product-swiper w-full aspect-square bg-gray-50 rounded-t-xl overflow-hidden relative group"
+  data-has-multiple={images.length > 1 ? "true" : "false"}
+>
+  <div class="swiper-wrapper">
+    {images && images.map((img: any, index: number) => {
+      const imageSrc = img?.src || img;
+      return (
+        <div class="swiper-slide flex items-center justify-center p-4">
+          <img 
+            src={imageSrc} 
+            alt={`${productTitle} - ${index + 1}`}
+            class="max-w-full max-h-full object-contain mix-blend-multiply" 
+            loading={index === 0 ? "eager" : "lazy"}
+          />
+        </div>
+      );
+    })}
+  </div>
+  
+  {images.length > 1 && (
+    <>
+      <div class="swiper-button-prev !text-emerald-600 after:!text-[12px] !bg-white/90 !w-8 !h-8 !rounded-full !left-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"></div>
+      <div class="swiper-button-next !text-emerald-600 after:!text-[12px] !bg-white/90 !w-8 !h-8 !rounded-full !right-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"></div>
+      <div class="swiper-pagination"></div>
+    </>
+  )}
+</div>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+
+  function init() {
+    const swiperEls = document.querySelectorAll('.product-swiper');
+    swiperEls.forEach(el => {
+      if ((el as any).swiper) return;
+
+      // ✅ RÉCUPÉRATION DE L'INFO VIA DATA-ATTRIBUTE
+      const hasMultiple = el.getAttribute('data-has-multiple') === "true";
+
+      new Swiper(el as HTMLElement, {
+        modules: [Navigation, Pagination, Autoplay],
+        navigation: {
+          nextEl: el.querySelector('.swiper-button-next') as HTMLElement,
+          prevEl: el.querySelector('.swiper-button-prev') as HTMLElement,
+        },
+        pagination: { clickable: true, dynamicBullets: true },
+        // ✅ ON UTILISE LA VARIABLE LOCALE hasMultiple
+        loop: hasMultiple,
+        autoplay: hasMultiple ? { delay: 5000, pauseOnMouseEnter: true } : false,
+      });
+    });
+  }
+
+  init();
+  document.addEventListener('astro:after-swap', init);
+</script>
+
+<style is:global>
+  .product-swiper .swiper-pagination-bullet-active { background: #10b981 !important; }
+  .product-swiper:not(.swiper-initialized) .swiper-wrapper { display: flex; overflow: hidden; }
+  .product-swiper:not(.swiper-initialized) .swiper-slide { min-width: 100%; }
+</style>

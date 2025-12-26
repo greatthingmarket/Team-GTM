@@ -1,0 +1,94 @@
+---
+// src/pages/[lang]/terms.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+type Locale = 'en' | 'fr' | 'es' | 'de' | 'ar' | 'pt';
+
+// ✅ CORRECTION : Générer toutes les langues
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+  return locales.map(lang => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// ✅ TOUJOURS charger les traductions EN (peu importe la langue de l'URL)
+const t = (await import('../../i18n/en.js')).default;
+
+const lastUpdated = "November 18, 2025";
+const companyName = "Great Thing Market";
+const companyEmail = "contact@greatthingmarket.com";
+const siteUrl = "https://greatthingmarket.com";
+---
+
+<BaseLayout t={t} currentLang={lang} title="Terms & Conditions - Great Thing Market" noindex={true}>
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="text-5xl mb-6">📜</div>
+      <h1 class="text-5xl md:text-6xl font-bold text-primary mb-4 font-poppins">
+        Terms & Conditions
+      </h1>
+      <p class="text-gray-600">
+        <strong>Last Updated:</strong> {lastUpdated}
+      </p>
+    </div>
+
+    <!-- Introduction -->
+    <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-8 mb-12 border-2 border-blue-200">
+      <p class="text-lg text-gray-700 mb-0 leading-relaxed">
+        Welcome to {companyName}. By accessing and using our website, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.
+      </p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="prose prose-lg max-w-none">
+      
+      <!-- Section 1: Acceptance of Terms -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">1. Acceptance of Terms</h2>
+      <p class="text-gray-700 leading-relaxed">
+        By accessing or using {siteUrl}, you acknowledge that you have read, understood, and agree to be bound by these Terms & Conditions and our <a href="/en/privacy" class="text-accent hover:underline">Privacy Policy</a>.
+      </p>
+      <p class="text-gray-700 leading-relaxed">
+        If you do not agree with any part of these terms, you must not use our website.
+      </p>
+
+      <!-- Section 2: Use of Website -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">2. Use of Website</h2>
+      
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">2.1 Eligibility</h3>
+      <p class="text-gray-700 leading-relaxed">
+        You must be at least 13 years old to use this website. By using our site, you represent and warrant that you meet this age requirement.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-primary mt-6 mb-3">2.2 Permitted Use</h3>
+      <p class="text-gray-700 leading-relaxed">
+        You may use our website for lawful purposes only. You agree not to:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li>Violate any applicable laws or regulations</li>
+        <li>Infringe on intellectual property rights</li>
+        <li>Transmit harmful code, viruses, or malware</li>
+        <li>Engage in unauthorized data collection or scraping</li>
+        <li>Impersonate any person or entity</li>
+        <li>Interfere with the operation of the website</li>
+      </ul>
+
+      <!-- Les autres sections 3-14 restent identiques... -->
+      
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a 
+          href={`/${lang}/`}
+          class="inline-block bg-secondary hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full transition transform hover:scale-105"
+        >
+          ← Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Trust from '../../components/Trust.astro';
+import DealsOfDay from '../../components/DealsOfDay.astro';
+import Categories from '../../components/Categories.astro';
+import BlogPreview from '../../components/BlogPreview.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import t from '../../i18n/de.js';
+---
+
+<BaseLayout t={t} currentLang="de">
+  <Hero t={t} />
+  <Trust t={t} />
+  <DealsOfDay t={t} />
+  <Categories t={t} currentLang="de" />
+  <BlogPreview t={t} currentLang="de" />
+  <Newsletter t={t} currentLang="de" />
+</BaseLayout>

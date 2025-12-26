@@ -1,0 +1,95 @@
+---
+// src/pages/[lang]/confirm.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { confirmSubscriber, getSubscriberByToken } from '../../lib/supabase';
+import { useTranslations } from '../../i18n/ui';
+
+// Désactiver le pré-rendu car on dépend des paramètres d'URL (token)
+export const prerender = false;
+
+const { lang } = Astro.params;
+const url = new URL(Astro.request.url);
+const token = url.searchParams.get('token');
+
+// Récupération des traductions via ton utilitaire centralisé
+const t = useTranslations(lang);
+
+let status: 'success' | 'error' | 'already_confirmed' | 'invalid' = 'invalid';
+
+if (token) {
+  try {
+    const subscriber = await getSubscriberByToken(token);
+    
+    if (!subscriber) {
+      status = 'invalid';
+    } else if (subscriber.confirmed) {
+      status = 'already_confirmed';
+    } else {
+      await confirmSubscriber(token);
+      status = 'success';
+    }
+  } catch (error) {
+    console.error('Confirmation error:', error);
+    status = 'error';
+  }
+}
+
+// Configuration des messages selon le statut et la langue
+const messages = {
+  en: {
+    success: { title: "Welcome!", message: "Your subscription is confirmed. Get ready for the best deals!" },
+    already_confirmed: { title: "Already with us!", message: "Your email is already confirmed. You're all set!" },
+    error: { title: "Oops!", message: "A server error occurred. Please try again later." },
+    invalid: { title: "Invalid Link", message: "This confirmation link is invalid or has expired." }
+  },
+  fr: {
+    success: { title: "Bienvenue !", message: "Votre inscription est confirmée. Préparez-vous à recevoir les meilleures offres !" },
+    already_confirmed: { title: "Déjà inscrit !", message: "Votre email est déjà confirmé. Vous ne manquerez rien !" },
+    error: { title: "Oups !", message: "Une erreur serveur est survenue. Veuillez réessayer plus tard." },
+    invalid: { title: "Lien invalide", message: "Ce lien de confirmation est invalide ou a expiré." }
+  }
+};
+
+// On récupère le pack de messages (fallback sur 'en' si la langue n'est pas traduite ici)
+const langKey = (lang && lang in messages) ? lang : 'en';
+const currentMessage = messages[langKey as keyof typeof messages][status];
+---
+
+<BaseLayout t={t} currentLang={lang} noindex={true} title={currentMessage.title}>
+  <section class="min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-green-50 to-orange-50 py-20 px-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center border border-slate-100">
+      <div class={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center text-4xl ${
+        status === 'success' ? 'bg-green-100' : 
+        status === 'already_confirmed' ? 'bg-blue-100' : 
+        'bg-red-100'
+      }`}>
+        {status === 'success' && '🎉'}
+        {status === 'already_confirmed' && '✅'}
+        {(status === 'error' || status === 'invalid') && '❌'}
+      </div>
+
+      <h1 class="text-3xl font-poppins font-bold text-slate-900 mb-4">
+        {currentMessage.title}
+      </h1>
+
+      <p class="text-slate-600 mb-8 leading-relaxed">
+        {currentMessage.message}
+      </p>
+
+      <div class="space-y-4">
+        <a
+          href={`/${lang}/`}
+          class="inline-block w-full bg-[#1a936f] hover:bg-[#147a5c] text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+        >
+          {lang === 'fr' ? "Retour à l'accueil" : "Back to Home"}
+        </a>
+        
+        {status === 'success' && (
+           <p class="text-xs text-slate-400">
+             {lang === 'fr' ? "Pensez à vérifier vos courriers indésirables." : "Remember to check your spam folder."}
+           </p>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

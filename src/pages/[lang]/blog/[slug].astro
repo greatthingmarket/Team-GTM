@@ -1,0 +1,134 @@
+---
+// src/pages/[lang]/blog/[slug].astro
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../i18n/ui';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  
+  // ✅ CORRECTION : Générer UNIQUEMENT les routes pour les articles existants
+  return allPosts.map((entry) => {
+    // Extraction de la langue et du slug depuis l'ID du fichier
+    // Exemple : "fr/air-fryer-review" → lang="fr", slug="air-fryer-review"
+    const [lang, ...slugParts] = entry.id.split('/');
+    const slug = slugParts.join('/');
+    
+    return {
+      params: { lang, slug },
+      props: { entry },
+    };
+  });
+}
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+}
+
+const { entry } = Astro.props;
+const { lang } = Astro.params;
+
+// ✅ Extraction de la langue depuis l'ID du post (plus fiable)
+const [postLang] = entry.id.split('/');
+
+// ✅ Date valide
+const dateObj = new Date(entry.data.date);
+const isValidDate = !isNaN(dateObj.getTime());
+
+// Rendu du contenu
+const { Content } = await entry.render();
+
+// Traductions
+const t = useTranslations(postLang);
+
+// Formatage de la date
+const formattedDate = isValidDate 
+  ? dateObj.toLocaleDateString(postLang, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  : "";
+---
+
+<BaseLayout title={entry.data.title} t={t} currentLang={postLang}>
+  <article class="min-h-screen bg-white">
+    <header class="pt-24 pb-12 bg-slate-50 border-b border-slate-100">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="inline-block px-4 py-1.5 mb-6 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-widest">
+          {entry.data.category}
+        </div>
+        
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 font-poppins leading-tight">
+          {entry.data.title}
+        </h1>
+        
+        <div class="flex items-center justify-center gap-4 text-slate-500 font-medium">
+          {isValidDate && (
+            <time datetime={dateObj.toISOString()}>{formattedDate}</time>
+          )}
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+          <span>{entry.data.author || 'Great Thing Market'}</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-16">
+      <div class="flex flex-col lg:flex-row gap-12">
+        
+        <!-- Contenu principal -->
+        <div class="w-full lg:w-3/4">
+          <div class="prose prose-lg prose-slate max-w-none 
+            prose-headings:font-poppins prose-headings:font-bold prose-headings:text-slate-900
+            prose-a:text-primary hover:prose-a:text-primary-dark
+            prose-img:rounded-3xl prose-img:shadow-xl
+            prose-video:rounded-3xl prose-video:shadow-xl">
+            <Content />
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="w-full lg:w-1/4">
+          <div class="sticky top-24 space-y-8">
+            <div class="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8 border-2 border-primary/10">
+              <div class="text-4xl mb-4 text-center">📬</div>
+              <h3 class="text-xl font-bold text-slate-900 mb-4 font-poppins text-center">
+                {t.newsletter?.title || "Don't Miss Out!"}
+              </h3>
+              <p class="text-sm text-slate-600 mb-6 leading-relaxed text-center">
+                {t.newsletter?.subtitle || "Get the best deals directly."}
+              </p>
+              <a 
+                href={`/${postLang}/#newsletter`} 
+                class="block w-full text-center bg-primary text-white font-bold py-3 rounded-full hover:bg-primary-dark transition-all shadow-lg hover:scale-105"
+              >
+                {t.newsletter?.button || "Subscribe"}
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </main>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  /* Amélioration du rendu Markdown */
+  .prose blockquote {
+    font-style: italic;
+    border-left: 4px solid #1a936f;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0 1.5rem 1.5rem 0;
+  }
+  
+  .prose img,
+  .prose video {
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

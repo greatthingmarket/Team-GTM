@@ -1,0 +1,167 @@
+# ==================================
+# 🏗️ BUILD CONFIGURATION
+# ==================================
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# ==================================
+# 🔄 REDIRECTS & REWRITES
+# ==================================
+
+# Redirect root to default language (English)
+[[redirects]]
+  from = "/"
+  to = "/en/"
+  status = 302
+  force = false
+
+# SPA fallback for all language routes
+[[redirects]]
+  from = "/en/*"
+  to = "/en/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/fr/*"
+  to = "/fr/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/es/*"
+  to = "/es/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/de/*"
+  to = "/de/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ar/*"
+  to = "/ar/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/pt/*"
+  to = "/pt/index.html"
+  status = 200
+
+# Fallback for any unmatched routes
+[[redirects]]
+  from = "/*"
+  to = "/en/index.html"
+  status = 404
+
+# ==================================
+# 🎯 HEADERS (Security & Performance)
+# ==================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security Headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    
+    # Performance Headers
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ==================================
+# 🌍 ENVIRONMENT VARIABLES (Contexts)
+# ==================================
+
+[context.production]
+  command = "npm run build"
+  [context.production.environment]
+    CONTEXT = "production"
+    NODE_ENV = "production"
+
+[context.deploy-preview]
+  command = "npm run build"
+  [context.deploy-preview.environment]
+    CONTEXT = "deploy-preview"
+
+[context.branch-deploy]
+  command = "npm run build"
+  [context.branch-deploy.environment]
+    CONTEXT = "branch-deploy"
+
+# ==================================
+# 🚀 BUILD PLUGINS
+# ==================================
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs]
+    output_path = "reports/lighthouse.html"
+
+[[plugins]]
+  package = "netlify-plugin-submit-sitemap"
+
+  [plugins.inputs]
+    baseUrl = "https://greatthingmarket.com"
+    sitemapPath = "/sitemap-index.xml"
+    ignorePeriod = 0
+    providers = [
+      "google",
+      "bing",
+      "yandex"
+    ]
+
+# ==================================
+# ⚡ EDGE FUNCTIONS (Optional)
+# ==================================
+# Uncomment if you add edge functions later
+# [[edge_functions]]
+#   function = "geolocation"
+#   path = "/api/geo"
+
+# ==================================
+# 📝 NOTES
+# ==================================
+# Remember to configure these in Netlify UI > Site Settings > Environment Variables:
+# - SUPABASE_URL
+# - SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_KEY
+# - RESEND_API_KEY
+# - UPSTASH_REDIS_REST_URL
+# - UPSTASH_REDIS_REST_TOKEN
+# - PUBLIC_SITE_URL
+# - PUBLIC_GA_MEASUREMENT_ID
+# - PUBLIC_GOOGLE_SITE_VERIFICATION
+# - PUBLIC_BING_VERIFICATION (optional)
+# - PUBLIC_CLARITY_ID (optional)
+# - INDEXNOW_KEY (optional)

@@ -1,0 +1,86 @@
+---
+// src/components/BlogPreview.astro
+import { getCollection } from 'astro:content';
+import BlogCard from './BlogCard.astro';
+import { useTranslations, type Locale } from '../i18n/ui';
+
+interface Props {
+  t: any;
+  currentLang: Locale;
+}
+
+const { t, currentLang = 'en' } = Astro.props as Props;
+
+// ✅ CORRECTION : Récupération de TOUS les posts
+const allPosts = await getCollection('blog');
+
+// ✅ FILTRE SIMPLIFIÉ ET ROBUSTE
+const posts = allPosts.filter(post => {
+  // Extraction de la langue depuis l'ID du fichier
+  // Exemples d'ID possibles :
+  // - "en/air-fryer-review" ✅
+  // - "air-fryer-review" (si pas de sous-dossier) ❌
+  const [firstSegment] = post.id.split('/');
+  
+  // Si l'ID contient un slash, firstSegment est la langue
+  // Sinon, on vérifie si firstSegment correspond à une langue valide
+  if (post.id.includes('/')) {
+    return firstSegment === currentLang;
+  }
+  
+  // Fallback : si pas de structure lang/, on accepte tout pour 'en'
+  return currentLang === 'en';
+});
+
+const sortedPosts = posts.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const latestPosts = sortedPosts.slice(0, 3);
+
+// 🔍 DEBUG (à retirer en production)
+console.log('🔍 BlogPreview Debug:', {
+  currentLang,
+  totalPosts: allPosts.length,
+  filteredPosts: posts.length,
+  postIds: allPosts.map(p => p.id),
+});
+---
+
+<section id="blog" class="pt-16 pb-16" style="background: linear-gradient(145deg, #FFF2E3, #FEE2C1);">
+  <div class="max-w-[80%] mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-extrabold text-slate-900 mb-4">
+        {t.blog?.title || "Latest Blog Posts"}
+      </h2>
+      <p class="text-lg text-slate-700 max-w-2xl mx-auto">
+        {t.blog?.subtitle || "Trends, reviews, and smart buying tips"}
+      </p>
+    </div>
+    
+    {latestPosts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {latestPosts.map(post => <BlogCard post={post} />)}
+      </div>
+    ) : (
+      <div class="text-center py-10 bg-white/50 rounded-2xl border border-dashed border-orange-300">
+        <p class="text-slate-600 mb-2">
+          {currentLang === 'fr' ? "Aucun article disponible pour le moment." : "No posts available yet."}
+        </p>
+        <!-- 🔍 Info de debug -->
+        <p class="text-xs text-slate-400 mt-4">
+          Debug: {allPosts.length} articles totaux, langue: {currentLang}
+        </p>
+      </div>
+    )}
+    
+    <div class="text-center mt-12">
+       <a href={`/${currentLang}/blog`} class="inline-flex items-center font-bold text-orange-600 hover:text-orange-700 transition-colors gap-2">
+         {t.blog?.readMore || "View All"}
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+           <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+         </svg>
+       </a>
+    </div>
+  </div>
+</section>

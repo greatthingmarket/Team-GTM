@@ -1,0 +1,270 @@
+---
+// src/pages/[lang]/affiliate-disclosure.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+type Locale = 'en' | 'fr' | 'es' | 'de' | 'ar' | 'pt';
+
+export function getStaticPaths() {
+  const locales: Locale[] = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+  return locales.map(lang => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// Charger les traductions
+const translations: Record<Locale, () => Promise<any>> = {
+  en: () => import('../../i18n/en.js'),
+  fr: () => import('../../i18n/fr.js'),
+  es: () => import('../../i18n/es.js'),
+  de: () => import('../../i18n/de.js'),
+  ar: () => import('../../i18n/ar.js'),
+  pt: () => import('../../i18n/pt.js'),
+};
+
+const t = (await translations[lang]()).default;
+
+const lastUpdated = "November 18, 2025";
+---
+
+<BaseLayout t={t} currentLang={lang} title="Affiliate Disclosure - Great Thing Market" noindex={true}>
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="text-5xl mb-6">🤝</div>
+      <h1 class="text-5xl md:text-6xl font-bold text-primary mb-4 font-poppins">
+        Affiliate Disclosure
+      </h1>
+      <p class="text-gray-600">
+        <strong>Last Updated:</strong> {lastUpdated}
+      </p>
+    </div>
+
+    <!-- Introduction -->
+    <div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl p-8 mb-12 border-2 border-orange-200">
+      <h2 class="text-2xl font-bold text-primary mb-4">Transparency First</h2>
+      <p class="text-lg text-gray-700 mb-0 leading-relaxed">
+        At Great Thing Market, we believe in complete transparency. This disclosure explains our affiliate 
+        relationships and how we earn commissions when you purchase products through our links.
+      </p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="prose prose-lg max-w-none">
+      
+      <!-- What Are Affiliate Links -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">What Are Affiliate Links?</h2>
+      <p class="text-gray-700 leading-relaxed">
+        An affiliate link is a special tracking URL that allows us to earn a commission when you make a 
+        purchase after clicking our link. These links are provided by e-commerce platforms like:
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+        <div class="bg-white rounded-lg p-4 text-center shadow-sm border-2 border-gray-100">
+          <img src="/assets/Temu.png" alt="Temu" class="h-12 mx-auto mb-2" />
+          <p class="text-sm font-semibold text-gray-700">Temu</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 text-center shadow-sm border-2 border-gray-100">
+          <img src="/assets/Amazon.png" alt="Amazon" class="h-12 mx-auto mb-2" />
+          <p class="text-sm font-semibold text-gray-700">Amazon</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 text-center shadow-sm border-2 border-gray-100">
+          <img src="/assets/Aliexpress.png" alt="AliExpress" class="h-12 mx-auto mb-2" />
+          <p class="text-sm font-semibold text-gray-700">AliExpress</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 text-center shadow-sm border-2 border-gray-100">
+          <img src="/assets/Shein.png" alt="Shein" class="h-12 mx-auto mb-2" />
+          <p class="text-sm font-semibold text-gray-700">Shein</p>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">How It Works</h2>
+      <div class="space-y-6">
+        <div class="flex items-start gap-4 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
+          <div class="text-3xl flex-shrink-0">1️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">You Click Our Link</h3>
+            <p class="text-gray-700 mb-0">
+              When you click a product link on our website, you're redirected to the retailer's site 
+              with a special tracking code.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 bg-gradient-to-br from-blue-50 to-orange-50 rounded-xl p-6 border-2 border-blue-200">
+          <div class="text-3xl flex-shrink-0">2️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">You Make a Purchase</h3>
+            <p class="text-gray-700 mb-0">
+              If you decide to buy the product (or anything else during that session), the retailer 
+              records the sale as coming from our referral.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 bg-gradient-to-br from-orange-50 to-green-50 rounded-xl p-6 border-2 border-orange-200">
+          <div class="text-3xl flex-shrink-0">3️⃣</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">We Earn a Commission</h3>
+            <p class="text-gray-700 mb-0">
+              The retailer pays us a small percentage (typically 2-10%) of the sale. 
+              <strong class="text-accent">This does NOT increase your price!</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Points -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">Key Points You Should Know</h2>
+      <div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-6">
+        <ul class="space-y-4 mb-0">
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">✅</span>
+            <span class="text-gray-700">
+              <strong class="text-primary">No Extra Cost:</strong> Affiliate commissions are paid by the 
+              retailer, not by you. Your price remains exactly the same whether you use our link or not.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">✅</span>
+            <span class="text-gray-700">
+              <strong class="text-primary">Honest Reviews:</strong> We only recommend products we've tested 
+              or genuinely believe will benefit you. Our reviews remain 100% unbiased.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">✅</span>
+            <span class="text-gray-700">
+              <strong class="text-primary">Clear Marking:</strong> All affiliate links are clearly marked 
+              with buttons like "Get this product 🛒" or stated in our content.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">✅</span>
+            <span class="text-gray-700">
+              <strong class="text-primary">Support Our Work:</strong> Commissions help us maintain the 
+              website, test more products, and continue finding great deals for you.
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- FTC Compliance -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">FTC Compliance</h2>
+      <p class="text-gray-700 leading-relaxed">
+        In accordance with the Federal Trade Commission (FTC) guidelines for endorsements and testimonials, 
+        we disclose that Great Thing Market has financial relationships with some of the merchants and 
+        products mentioned on this site. We may be compensated if you purchase through our affiliate links.
+      </p>
+      <p class="text-gray-700 leading-relaxed">
+        Learn more about FTC guidelines: 
+        <a 
+          href="https://www.ftc.gov/legal-library/browse/rules/guides-concerning-use-endorsements-testimonials-advertising" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-accent hover:underline font-semibold"
+        >
+          FTC Endorsement Guides
+        </a>
+      </p>
+
+      <!-- Our Commitment -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">Our Commitment to You</h2>
+      <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-xl p-8 mb-6">
+        <ul class="space-y-4 mb-0">
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">🎯</span>
+            <span>
+              <strong>Value First:</strong> We prioritize products that offer genuine value and savings, 
+              not just high commissions.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">🔍</span>
+            <span>
+              <strong>Thorough Research:</strong> We spend hours testing products and comparing prices 
+              before recommending them.
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">💬</span>
+            <span>
+              <strong>Open Communication:</strong> If you have concerns about any product or review, 
+              contact us at 
+              <a href="mailto:contact@greatthingmarket.com" class="underline hover:no-underline">
+                contact@greatthingmarket.com
+              </a>
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-2xl flex-shrink-0">📊</span>
+            <span>
+              <strong>Data-Driven:</strong> We track price history, monitor reviews, and analyze deals 
+              to ensure we're sharing the best offers.
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Non-Affiliate Content -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">Non-Affiliate Content</h2>
+      <p class="text-gray-700 leading-relaxed">
+        Not all content on Great Thing Market contains affiliate links. Some articles, guides, and reviews 
+        are purely informational and don't generate any commission. Our goal is to provide value first, 
+        regardless of monetization.
+      </p>
+
+      <!-- Updates -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">Updates to This Disclosure</h2>
+      <p class="text-gray-700 leading-relaxed">
+        We may update this affiliate disclosure from time to time to reflect changes in our partnerships 
+        or practices. The "Last Updated" date at the top indicates the most recent revision.
+      </p>
+
+      <!-- Questions -->
+      <h2 class="text-3xl font-bold text-primary mt-12 mb-4">Questions?</h2>
+      <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-8 border-2 border-green-200">
+        <p class="text-lg text-gray-700 mb-4">
+          If you have any questions about our affiliate relationships or this disclosure, please don't 
+          hesitate to reach out:
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a 
+            href="mailto:contact@greatthingmarket.com"
+            class="inline-block bg-accent hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full transition text-center"
+          >
+            📧 Contact Us
+          </a>
+          <a 
+            href={`/${lang}/about`}
+            class="inline-block bg-secondary hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-full transition text-center"
+          >
+            📖 Learn More About Us
+          </a>
+        </div>
+      </div>
+
+      <!-- Thank You -->
+      <div class="mt-12 text-center bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl p-8 border-2 border-orange-200">
+        <h2 class="text-3xl font-bold text-primary mb-4">Thank You for Your Support! 🙏</h2>
+        <p class="text-lg text-gray-700 mb-0">
+          By using our affiliate links, you help us continue providing free content, testing products, 
+          and finding the best deals for our community. We truly appreciate your trust and support!
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a 
+          href={`/${lang}/`}
+          class="inline-block bg-primary hover:bg-secondary text-white font-semibold px-8 py-3 rounded-full transition transform hover:scale-105"
+        >
+          ← Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

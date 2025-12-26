@@ -1,0 +1,18 @@
+---
+// src/pages/index.astro
+// ✅ SOLUTION FINALE : Redirection 302 (temporaire) avec détection langue
+
+export const prerender = false; // Mode serveur requis pour accéder aux headers
+
+// Détection de la langue préférée depuis les headers HTTP
+const acceptLanguage = Astro.request.headers.get('accept-language') || 'en';
+const userLang = acceptLanguage.split(',')[0].split('-')[0]; // 'fr-FR,en;q=0.9' -> 'fr'
+
+// Langues supportées
+const supportedLangs = ['en', 'fr', 'es', 'de', 'ar', 'pt'];
+const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
+
+// ✅ CORRECTIF : Redirection 302 (temporaire) au lieu de 301
+// Google comprend que c'est une redirection basée sur la langue utilisateur
+return Astro.redirect(`/${targetLang}/`, 302);
+---

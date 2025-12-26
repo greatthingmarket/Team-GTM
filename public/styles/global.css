@@ -1,0 +1,1373 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+body {
+  @apply bg-light text-dark font-inter;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-poppins text-primary;
+}
+
+/* Badge style for deals */
+.deal-badge {
+  @apply inline-block bg-accent text-white px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+/* ✅ Utilise translate3d pour accélération GPU */
+@keyframes card-fade-up {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.card-animate {
+  animation: card-fade-up 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Optional: Shine effect for CTA or elements */
+@keyframes shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shine-effect {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% auto;
+  animation: shine 3s ease-in-out infinite;
+}
+
+/* 🔧 CORRECTION: Conteneur du bouton de sélection de langue */
+.lang-selector-button {
+  @apply inline-flex items-center justify-center;
+  @apply rounded-full border-2 border-primary bg-light p-0.5;
+  @apply transition-transform duration-200 ease-out hover:scale-110;
+  @apply focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2;
+  
+  /* 🔧 NOUVEAU: Border vert secondary */
+  border: 1px solid #22C55E;
+  
+  /* Le conteneur s'adapte à l'image */
+  width: auto;
+  height: auto;
+}
+
+
+/* 🔧 CORRECTION: Taille fixe de l'image du drapeau */
+.lang-selector-button img {
+  /* ✅ Taille unique pour toutes les résolutions : 20px */
+  width: 20px !important;
+  height: 20px !important;
+  
+  /* Styles communs */
+  @apply rounded-full object-cover;
+  flex-shrink: 0;
+  
+  /* Empêche l'image de dépasser sa taille définie */
+  max-width: 20px;
+  max-height: 20px;
+  display: block;
+}
+
+/* Logo : affichage par défaut (1 ligne) */
+.logo-text {
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo-line-1,
+.logo-line-2 {
+  display: inline;
+}
+
+.logo-line-2::before {
+  content: ' '; /* Espace entre "Thing" et "Market" */
+}
+
+/* ========================================
+   STYLES POUR LE HEADER
+   ======================================== */
+
+/* 🎨 Border-bottom du header */
+.header-container {
+  border-bottom: 1px solid #22C55E !important;
+}
+
+/* 🎨 Contour du sélecteur de langue */
+.lang-selector-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 9999px !important;
+  border: 1px solid #22C55E !important;
+  background-color: #f8fffe !important;
+  padding: 0.125rem !important;
+  transition: transform 0.2s ease-out !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.lang-selector-button:hover {
+  transform: scale(1.1) !important;
+}
+
+.lang-selector-button:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #22c55e, 0 0 0 4px rgba(34, 197, 94, 0.2) !important;
+}
+
+.lang-selector-flag {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  border-radius: 9999px !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+}
+
+/* Logo du header - Petits écrans mobiles (≤320px) : 10px */
+.header-logo-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  line-height: 1.1 !important;
+  font-size: 10px !important;
+}
+
+.header-logo-text .logo-line-2::before {
+  content: '' !important;
+}
+
+/* Navigation desktop - taille par défaut */
+.header-nav-link {
+  font-size: 14px !important;
+}
+
+/* Menu mobile - Petits écrans (≤320px) : 16px */
+.header-menu-item {
+  font-size: 16px !important;
+}
+
+/* ========================================
+   STYLES POUR LA SECTION HERO
+   ======================================== */
+
+/* Titre Hero (h1) - Styles de base */
+.hero-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  display: block !important;
+  
+  /* Centrage horizontal */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  
+  /* Mobile très petit (≤ 320px) : 90% max 280px, 28px, mb 15px */
+  width: 90% !important;
+  max-width: 280px !important;
+  font-size: 24px !important;
+  line-height: 1.5 !important;
+  margin-bottom: 15px !important;
+}
+
+/* Sous-titre Hero (p) - Styles de base */
+.hero-subtitle {
+  font-family: 'Inter', sans-serif !important;
+  text-align: center !important;
+  display: block !important;
+  
+  /* Centrage horizontal */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  
+  /* Mobile très petit (≤ 320px) : 14px, mb 24px */
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 24px !important;
+}
+
+/* ========================================
+   STYLES POUR LES CARTES DEALS ET IMAGES
+   ======================================== */
+
+/* Conteneur du Swiper dans chaque carte - DIMENSIONS FIXES */
+.deal-card-swiper-wrapper {
+  width: 100% !important;
+  height: 180px !important; /* Hauteur fixe au lieu d'aspect-ratio */
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0.75rem !important;
+  background-color: #f9fafb !important; /* Fond gris clair pour visualiser */
+}
+
+/* Swiper lui-même */
+.product-swiper {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Les slides individuels */
+.product-swiper .swiper-slide {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+/* Images dans le swiper - 100% de l'espace disponible */
+.product-swiper img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* 🔧 GRID CONTAINER - BASE MOBILE (≤320px) */
+.deals-grid-container {
+  display: grid !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+  
+  /* 1 colonne, carte de 280px max */
+  grid-template-columns: 250px !important;
+  gap: 10px !important;
+  width: auto !important;
+}
+
+/* Cartes individuelles */
+.deal-card {
+  width: 100% !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+
+
+/* ========================================
+   CLASSES RESPONSIVES POUR LES SECTIONS
+   🔧 VERSION AVEC SPÉCIFICITÉ MAXIMALE
+   ======================================== */
+
+/* Titres des sections (h2) */
+h2.section-title,
+.section-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 600 !important;
+  color: #1a936f !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  
+  /* Mobile très petit (≤ 320px) : 20px */
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+}
+
+/* Sous-titres/Paragraphes des sections */
+p.section-subtitle,
+.section-subtitle {
+  font-family: 'Inter', sans-serif !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  
+  /* Mobile très petit (≤ 320px) : 12px */
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+/* Sous-titre blanc */
+.section-subtitle-white,
+p.section-subtitle-white {
+  font-family: 'Inter', sans-serif !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  color: #ffffff !important;
+  
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+.section-title-white,
+h2.section-title-white {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+}
+
+
+
+/* ========================================
+   STYLES POUR LA SECTION CATEGORIES
+   ======================================== */
+
+/* Container principal des catégories */
+.categories-container {
+  max-width: min(1200px, 80%) !important;
+  width: 80% !important;
+  margin: 0 auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+/* 🎨 Dégradé pour le fond des cercles d'icônes */
+.category-icon-circle {
+  background: linear-gradient(145deg, #21BF58, #1AAE50) !important;
+}
+
+/* Grid des catégories - Mobile très petit (≤320px) : 1 colonne */
+.categories-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+  width: 100% !important;
+}
+
+
+/* ========================================
+   STYLES POUR LA SECTION BLOG
+   ======================================== */
+
+/* Container principal du blog */
+.blog-container {
+  max-width: min(1200px, 80%) !important;
+  width: 80% !important;
+  margin: 0 auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+/* Grid du blog - Mobile très petit (≤320px) : 1 colonne */
+.blog-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.5rem !important;
+  width: 100% !important;
+}
+
+/* 🎨 Typographie des cartes blog - Mobile très petit (≤320px) */
+.blog-card-title {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.blog-card-description {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+/* ========================================
+   STYLES POUR LA SECTION NEWSLETTER
+   ======================================== */
+
+/* Container principal de la newsletter - Mobile très petit (≤320px) : 80% max 280px */
+.newsletter-container {
+  max-width: min(280px, 80%) !important;
+  width: 80% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 🎨 Bouton CTA Newsletter avec contour blanc et effet hover */
+.newsletter-cta-button {
+  border: 1px solid white !important;
+  transition: all 0.3s ease !important;
+}
+
+.newsletter-cta-button:hover {
+  background-color: white !important;
+  color: #1A936F !important;
+  border: 1px solid #ff6b35 !important;
+}
+
+/* ========================================
+   STYLES POUR LE FOOTER
+   ======================================== */
+
+/* Container du footer - Petits écrans mobiles (≤320px) : 1 colonne, 80% max 280px */
+.footer-container {
+  max-width: min(280px, 80%) !important;
+  width: 80% !important;
+  margin: 0 auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 2.5rem !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+
+/* 🎨 Typographie du Footer - Petits écrans mobiles (≤320px) */
+.footer-logo-title {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.footer-description {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+
+
+/* ========================================
+   ✅ NOUVEAU : Espacement des images dans les articles de blog
+   ======================================== */
+
+/* Espacement vertical pour toutes les images dans les articles */
+article .prose img {
+  margin-top: 2.5rem !important;
+  margin-bottom: 2.5rem !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Espacement après un paragraphe avant une image */
+article .prose p + img {
+  margin-top: 2rem !important;
+}
+
+/* Espacement après une image avant un paragraphe */
+article .prose img + p {
+  margin-top: 2rem !important;
+}
+
+/* Espacement après un titre avant une image */
+article .prose h2 + img,
+article .prose h3 + img {
+  margin-top: 1.5rem !important;
+}
+
+/* Espacement après une image avant un titre */
+article .prose img + h2 {
+  margin-top: 3rem !important;
+}
+
+article .prose img + h3 {
+  margin-top: 2.5rem !important;
+}
+
+/* Espacement pour les listes avant/après images */
+article .prose ul + img,
+article .prose ol + img {
+  margin-top: 2rem !important;
+}
+
+article .prose img + ul,
+article .prose img + ol {
+  margin-top: 2rem !important;
+}
+
+/* ✅ BONUS : Style pour les légendes d'images (si vous en ajoutez) */
+article .prose figure {
+  margin-top: 2.5rem !important;
+  margin-bottom: 2.5rem !important;
+}
+
+article .prose figcaption {
+  margin-top: 1rem !important;
+  text-align: center !important;
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  font-style: italic !important;
+}
+
+/* ========================================
+   🟢 NOUVEAU : Boutons CTA VERTS dans les articles
+   ======================================== */
+
+/* Cibler tous les liens dans le contenu des articles qui ressemblent à des boutons */
+article .prose a[class*="bg-orange"],
+article .prose a[class*="bg-accent"] {
+  background-color: #22c55e !important; /* Couleur secondary (vert) */
+  color: white !important;
+  border: none !important;
+}
+
+/* État hover pour les boutons verts */
+article .prose a[class*="bg-orange"]:hover,
+article .prose a[class*="bg-accent"]:hover {
+  background-color: #16a34a !important; /* Vert plus foncé au hover */
+}
+
+/* ✅ STYLE UNIVERSEL : Tous les boutons CTA dans les articles */
+article .prose a[href*="temu.to"],
+article .prose a[href*="amazon.com"],
+article .prose a[href*="aliexpress.com"],
+article .prose a[href*="shein.com"] {
+  display: inline-block !important;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 9999px !important; /* Rounded full */
+  text-decoration: none !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(34, 197, 94, 0.3) !important;
+  margin: 1rem auto !important;
+  max-width: fit-content !important;
+}
+
+/* Effet hover pour les liens d'affiliation */
+article .prose a[href*="temu.to"]:hover,
+article .prose a[href*="amazon.com"]:hover,
+article .prose a[href*="aliexpress.com"]:hover,
+article .prose a[href*="shein.com"]:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 12px rgba(34, 197, 94, 0.4) !important;
+}
+
+/* ✅ STYLE SPÉCIFIQUE : Boutons avec classes orange/accent */
+article .prose .bg-orange-500,
+article .prose .bg-orange-600,
+article .prose .bg-accent {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  border: none !important;
+}
+
+article .prose .bg-orange-500:hover,
+article .prose .bg-orange-600:hover,
+article .prose .bg-accent:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+}
+
+/* ✅ PROTECTION : S'assurer que les boutons dans les tableaux sont aussi verts */
+article .prose table a[class*="bg-orange"],
+article .prose table a[class*="bg-accent"],
+article .prose table a[href*="temu.to"],
+article .prose table a[href*="amazon.com"] {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  color: white !important;
+}
+
+/* ========================================
+   🎨 BONUS : Style pour les boutons "disabled" ou "coming soon"
+   ======================================== */
+
+article .prose a[class*="disabled"],
+article .prose a.out-of-stock {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+article .prose a[class*="disabled"]:hover,
+article .prose a.out-of-stock:hover {
+  transform: none !important;
+  box-shadow: 0 4px 6px rgba(156, 163, 175, 0.3) !important;
+}
+
+
+/* Container principal des catégories */
+.category-page-container {
+  display: block;
+}
+
+/* Header de catégorie */
+.category-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* Cercle d'icône */
+.category-icon-circle {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  background: linear-gradient(145deg, #21BF58, #1AAE50);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+/* Cartes de deals */
+.deal-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.deal-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+/* Animation d'entrée des cartes */
+.card-animate {
+  animation: card-fade-up 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Message "No deals" */
+.no-deals-message {
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.no-deals-message .icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Breadcrumb */
+nav.breadcrumb {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   🔧 CORRECTIFS SPÉCIFIQUES
+   ======================================== */
+
+/* Forcer la largeur max du container principal */
+section .max-w-\[1000px\] {
+  max-width: 100% !important;
+}
+
+/* S'assurer que les deals-grid-container héritent correctement */
+section > div > .deals-grid-container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Ajuster les images dans les cartes */
+.deal-card img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Boutons CTA dans les cartes */
+.deal-card a[class*="bg-green"] {
+  margin-top: 1rem;
+  display: block;
+  text-align: center;
+}
+
+
+/* ========================================
+   MEDIA QUERIES POUR LA RÉACTIVITÉ
+   ======================================== */
+
+
+/* 🔧 Petits écrans mobiles (≤320px) : 12px sur 2 lignes */
+@media (max-width: 320px) {
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+    font-size: 10px !important;
+  }
+  
+  .logo-line-2::before {
+    content: ''; /* Supprime l'espace, passage à la ligne */
+  }
+
+  .header-cta {
+    font-size: 9px !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .menu-item {
+    font-size: 16px !important;
+  }
+
+  .hero-subtitle {
+    width: 80% !important;
+    max-width: 280px !important;
+  }
+
+  .hero-cta {
+    font-size: 14px !important;
+    padding : 8px 24px !important;
+  }
+
+  /* 🔧 DEALS: Mobile très petit (≤320px) */
+  .deal-card-swiper-wrapper {
+    height: 200px !important;
+  }
+
+  .deals-grid-container {
+    grid-template-columns: 280px !important;
+    gap: 10px !important;
+  }
+
+  .newsletter-container .section-title-white {
+    font-size: 18px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-page-container {
+    max-width: 280px !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Grille des deals - 1 colonne de 260px */
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: 260px !important;
+    gap: 12px !important;
+    max-width: 280px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  /* Cartes de deals */
+  .deal-card {
+    width: 100% !important;
+  }
+
+  /* Images dans les cartes */
+  .deal-card-swiper-wrapper {
+    height: 180px !important;
+  }
+
+  /* Titre de la catégorie */
+  .category-header h1 {
+    font-size: 28px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-header p {
+    font-size: 14px !important;
+  }
+
+  /* Icône de catégorie */
+  .category-icon-circle {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .category-icon-circle img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+}
+
+/* Mobile standard (321px - 767px) : 28px */
+@media (min-width: 321px) and (max-width: 767px) {
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+    font-size: 11px !important;
+  }
+
+  .header-cta {
+    font-size: 11px !important;
+  }
+
+  .menu-item {
+    font-size: 16px !important;
+  }
+
+  .hero-title {
+    width: 90% !important;
+    max-width: 380px !important;
+    font-size: 32px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-subtitle {
+    width: 80% !important;
+    max-width: 380px !important;
+    font-size: 14px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .hero-cta {
+    font-size: 14px !important;
+    padding : 8px 24px !important;
+  }
+
+  /* 🔧 DEALS: Mobile standard (321-767px) */
+  .deal-card-swiper-wrapper {
+    height: 220px !important;
+  }
+
+  .deals-grid-container {
+    grid-template-columns: 320px !important;
+    gap: 15px !important;
+  }
+
+  h2.section-title,
+  .section-title {
+    font-size: 28px !important;
+  }
+
+  .section-subtitle-white,
+  p.section-subtitle-white {
+    font-size: 14px !important;
+  }
+
+  p.section-subtitle,
+  .section-subtitle {
+    font-size: 14px !important;
+  }
+
+  .section-title-white,
+  h2.section-title-white {
+    font-size: 28px !important;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .blog-card-title {
+    font-size: 16px !important;
+  }
+
+  .blog-card-description {
+    font-size: 14px !important;
+  }
+
+  .newsletter-container {
+    max-width: min(600px, 80%) !important;
+    width: 80% !important;
+  }
+
+  .newsletter-container .section-title-white {
+    font-size: 22px !important;
+  }
+
+  .footer-container {
+    max-width: min(600px, 80%) !important;
+    width: 80% !important;
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+
+  .footer-logo-title {
+    font-size: 16px !important;
+  }
+
+  .footer-description {
+    font-size: 12px !important;
+  }
+
+  .category-page-container {
+    max-width: 380px !important;
+    width: 95% !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Grille - 1 colonne de 320px */
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: 320px !important;
+    gap: 16px !important;
+    max-width: 380px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  .deal-card-swiper-wrapper {
+    height: 200px !important;
+  }
+
+  .category-header h1 {
+    font-size: 32px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-header p {
+    font-size: 16px !important;
+  }
+
+  .category-icon-circle {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .category-icon-circle img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* Exactement 768px : 30px */
+@media (min-width: 768px) and (max-width: 768px) {
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+    font-size: 14px !important;
+  }
+
+  .logo-line-2::before {
+    content: '' !important;
+  }
+
+  .header-cta {
+    font-size: 12px !important;
+  }
+
+  .menu-item {
+    font-size: 16px !important;
+  }
+
+  .hero-title {
+    width: 85% !important;
+    max-width: 700px !important;
+    font-size: 60px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 16px !important;
+    margin-bottom: 28px !important;
+  }
+
+  /* 🔧 DEALS: Tablette 768px - 3 colonnes de 250px */
+  /* 🔧 DEALS: Tablette 768px - Colonnes flexibles adaptatives */
+  .deal-card-swiper-wrapper {
+    height: 180px !important;
+  }
+
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 220px) !important;
+    gap: 15px !important;
+    max-width: 80% !important;
+    width: 80% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  h2.section-title,
+  .section-title {
+    font-size: 30px !important;
+  }
+
+  p.section-subtitle,
+  .section-subtitle {
+    font-size: 14px !important;
+  }
+
+  .section-title-white,
+  h2.section-title-white {
+    font-size: 30px !important;
+  }
+
+  .section-subtitle-white,
+  p.section-subtitle-white {
+    font-size: 16px !important;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .blog-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  .blog-card-title {
+    font-size: 18px !important;
+  }
+
+  .blog-card-description {
+    font-size: 16px !important;
+  }
+
+  .newsletter-container {
+    max-width: min(650px, 70%) !important;
+    width: 70% !important;
+  }
+
+  .footer-container {
+    max-width: min(800px, 90%) !important;
+    width: 90% !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .footer-logo-title {
+    font-size: 14px !important;
+  }
+
+  .footer-description {
+    font-size: 12px !important;
+  }
+
+  .category-page-container {
+    max-width: 90% !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Grille - 3 colonnes de 220px */
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 220px) !important;
+    gap: 15px !important;
+    max-width: 90% !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  .deal-card-swiper-wrapper {
+    height: 180px !important;
+  }
+
+  .category-header h1 {
+    font-size: 40px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-header p {
+    font-size: 18px !important;
+  }
+
+  .category-icon-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .category-icon-circle img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+ 
+}
+
+/* Tablette (769px - 1024px) : 30px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .logo-text {
+    font-size: 16px !important;
+  }
+
+  .header-cta {
+    font-size: 12px !important;
+  }
+
+  .menu-item {
+    font-size: 18px !important;
+  }
+
+  .hero-title {
+    width: 70% !important;
+    max-width: 800px !important;
+    font-size: 60px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 16px !important;
+    margin-bottom: 30px !important;
+  }
+
+  /* 🔧 DEALS: Tablette 769-1024px - 3 colonnes de 282px (DESIGN QUI FONCTIONNE) */
+  .deal-card-swiper-wrapper {
+    height: 200px !important;
+  }
+
+  .deals-grid-container {
+    grid-template-columns: repeat(3, 282px) !important;
+    gap: 20px !important;
+    justify-content: center !important;
+  }
+
+
+  h2.section-title,
+  .section-title {
+    font-size: 30px !important;
+  }
+
+  p.section-subtitle,
+  .section-subtitle {
+    font-size: 16px !important;
+  }
+
+  .section-title-white,
+  h2.section-title-white {
+    font-size: 30px !important;
+  }
+
+  .section-subtitle-white,
+  p.section-subtitle-white {
+    font-size: 16px !important;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+
+  .blog-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  .blog-card-title {
+    font-size: 18px !important;
+  }
+
+  .blog-card-description {
+    font-size: 16px !important;
+  }
+
+  .newsletter-container {
+    max-width: min(750px, 60%) !important;
+    width: 60% !important;
+  }
+
+  .footer-container {
+    max-width: min(900px, 90%) !important;
+    width: 90% !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .footer-logo-title {
+    font-size: 16px !important;
+  }
+
+  .footer-description {
+    font-size: 12px !important;
+  }
+
+  .category-page-container {
+    max-width: 900px !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  /* Grille - 3 colonnes de 282px */
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 282px) !important;
+    gap: 20px !important;
+    max-width: 900px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  .deal-card-swiper-wrapper {
+    height: 200px !important;
+  }
+
+  .category-header h1 {
+    font-size: 48px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-header p {
+    font-size: 18px !important;
+  }
+
+  .category-icon-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .category-icon-circle img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+/* Desktop (≥ 1025px) : 32px */
+@media (min-width: 1025px) {
+  .logo-text {
+    font-size: 20px !important;
+  }
+
+  .header-cta {
+    font-size: inherit; /* Tailwind prendra le relais */
+  }
+
+  .hero-title {
+    width: 60% !important;
+    max-width: 900px !important;
+    font-size: 64px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 18px !important;
+    margin-bottom: 30px !important;
+  }
+
+ /* 🔧 DEALS: Desktop ≥1025px - 3 colonnes de 332px, gap 30px */
+  .deal-card-swiper-wrapper {
+    height: 250px !important;
+  }
+
+  .deals-grid-container {
+    grid-template-columns: repeat(3, 332px) !important;
+    gap: 30px !important;
+    justify-content: center !important;
+    max-width: 1200px !important;
+  }
+
+  h2.section-title,
+  .section-title {
+    font-size: 32px !important;
+  }
+
+  p.section-subtitle,
+  .section-subtitle {
+    font-size: 16px !important;
+  }
+
+  .section-title-white,
+  h2.section-title-white {
+    font-size: 32px !important;
+  }
+
+  .section-subtitle-white,
+  p.section-subtitle-white {
+    font-size: 16px !important;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 2rem !important;
+  }
+
+  .blog-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  .blog-card-title {
+    font-size: 20px !important;
+  }
+
+  .blog-card-description {
+    font-size: 16px !important;
+  }
+
+  .newsletter-container {
+    max-width: min(900px, 60%) !important;
+    width: 60% !important;
+  }
+
+  .footer-container {
+    max-width: min(1200px, 80%) !important;
+    width: 80% !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .footer-logo-title {
+    font-size: 20px !important;
+  }
+
+  .footer-description {
+    font-size: 14px !important;
+  }
+
+  .category-page-container {
+    max-width: 1200px !important;
+    width: 80% !important;
+    margin: 0 auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  /* Grille - 3 colonnes de 332px */
+  .deals-grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, 332px) !important;
+    gap: 30px !important;
+    max-width: 1200px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+  }
+
+  .deal-card-swiper-wrapper {
+    height: 250px !important;
+  }
+
+  .category-header h1 {
+    font-size: 56px !important;
+    line-height: 1.3 !important;
+  }
+
+  .category-header p {
+    font-size: 20px !important;
+  }
+
+  .category-icon-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .category-icon-circle img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}

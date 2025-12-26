@@ -1,0 +1,86 @@
+---
+// src/components/LanguagePicker.astro
+import { languages } from '../i18n/ui';
+
+// On récupère la langue actuelle depuis les paramètres Astro
+const { lang: currentLang = 'en' } = Astro.params;
+
+/**
+ * LOGIQUE DE REDIRECTION INTELLIGENTE
+ * Cette partie permet de passer de /fr/blog/mon-article à /en/blog/mon-article
+ */
+const pathname = Astro.url.pathname;
+const segments = pathname.split('/').filter(Boolean);
+
+// On extrait le chemin après le code langue (ex: 'blog/mon-article')
+// Si on est à la racine (/fr/), remainingPath sera vide.
+const remainingPath = segments.slice(1).join('/');
+
+/**
+ * Labels simplifiés pour le bouton principal
+ */
+const languageLabels: Record<string, string> = {
+  en: "EN",
+  fr: "FR",
+  es: "ES",
+  de: "DE",
+  ar: "AR",
+  pt: "PT"
+};
+---
+
+<div class="relative group inline-block">
+  <button 
+    type="button"
+    class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-full shadow-sm hover:border-primary/50 hover:shadow-md transition-all duration-300"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+      {languageLabels[currentLang as string] || 'EN'}
+    </div>
+    <span class="text-sm font-medium text-slate-700">
+      {languages[currentLang as keyof typeof languages] || 'English'}
+    </span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <div class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] overflow-hidden">
+    <div class="py-2">
+      {Object.entries(languages).map(([langCode, label]) => {
+        // Construction de l'URL cible : /code-langue/chemin-restant
+        // On ajoute un slash final si le chemin restant n'est pas vide
+        const targetUrl = `/${langCode}/${remainingPath}`;
+        
+        return (
+          <a
+            href={targetUrl}
+            class:list={[
+              "flex items-center justify-between px-4 py-3 text-sm transition-colors",
+              currentLang === langCode 
+                ? "bg-primary/5 text-primary font-bold" 
+                : "text-slate-600 hover:bg-slate-50 hover:text-primary"
+            ]}
+          >
+            <span>{label}</span>
+            {currentLang === langCode && (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            )}
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Support pour les langues RTL (Arabe) */
+  :global([dir="rtl"]) .group-hover\:visible {
+    right: auto;
+    left: 0;
+  }
+</style>

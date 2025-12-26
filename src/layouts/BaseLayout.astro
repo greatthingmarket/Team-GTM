@@ -1,0 +1,228 @@
+---
+// src/layouts/BaseLayout.astro - VERSION CORRIGÉE
+import Header from '../components/Header.jsx';
+import Footer from '../components/Footer.astro';
+import GoogleAnalytics from '../components/GoogleAnalytics.astro';
+
+interface Props {
+  t: any;
+  currentLang?: string;
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+}
+
+const { 
+  t, 
+  currentLang = 'en',
+  title,
+  description,
+  image,
+  canonical,
+  noindex = false
+} = Astro.props;
+
+// ✅ Récupération des variables d'environnement
+const GOOGLE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const BING_VERIFICATION = import.meta.env.PUBLIC_BING_VERIFICATION;
+const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID;
+
+// SEO Configuration
+const siteUrl = 'https://greatthingmarket.com';
+const pathname = Astro.url.pathname;
+
+const defaultTitles: Record<string, string> = {
+  en: 'Great Thing Market - Best Deals & Product Reviews',
+  fr: 'Great Thing Market - Meilleures Offres & Avis Produits',
+  es: 'Great Thing Market - Mejores Ofertas y Reseñas',
+  de: 'Great Thing Market - Beste Angebote & Produktbewertungen',
+  ar: 'Great Thing Market - أفضل العروض ومراجعات المنتجات',
+  pt: 'Great Thing Market - Melhores Ofertas e Avaliações',
+};
+
+const defaultDescriptions: Record<string, string> = {
+  en: 'Discover the best deals on trending products. Expert reviews, exclusive discounts up to 80% off from Temu, Amazon, AliExpress, and Shein.',
+  fr: 'Découvrez les meilleures offres sur les produits tendance. Avis d\'experts, réductions exclusives jusqu\'à 80% de Temu, Amazon, AliExpress et Shein.',
+  es: 'Descubre las mejores ofertas en productos de tendencia. Reseñas expertas, descuentos exclusivos hasta 80% de Temu, Amazon, AliExpress y Shein.',
+  de: 'Entdecken Sie die besten Angebote für Trendprodukte. Expertenbewertungen, exklusive Rabatte bis 80% von Temu, Amazon, AliExpress und Shein.',
+  ar: 'اكتشف أفضل العروض على المنتجات الرائجة. مراجعات الخبراء، خصومات حصرية تصل إلى 80٪ من Temu و Amazon و AliExpress و Shein.',
+  pt: 'Descubra as melhores ofertas em produtos em alta. Avaliações de especialistas, descontos exclusivos até 80% de Temu, Amazon, AliExpress e Shein.',
+};
+
+const pageTitle = title || defaultTitles[currentLang] || defaultTitles.en;
+const pageDescription = description || defaultDescriptions[currentLang] || defaultDescriptions.en;
+const pageImage = image || `${siteUrl}/assets/logo-512.png`;
+const pageUrl = canonical || `${siteUrl}${pathname}`;
+
+// ✅ Validation SEO en développement
+if (import.meta.env.DEV) {
+  if (!pageTitle || pageTitle.length < 10) console.error('❌ SEO: Title too short!', pathname);
+  if (!pageDescription || pageDescription.length < 50) console.error('❌ SEO: Description too short!', pathname);
+}
+
+// Schema.org JSON-LD
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  "name": "Great Thing Market",
+  "url": siteUrl,
+  "logo": `${siteUrl}/assets/logo-512.png`,
+  "sameAs": [
+    "https://facebook.com/greatthingmarket",
+    "https://instagram.com/greatthingmarket",
+    "https://pinterest.com/greatthingmarket",
+    "https://twitter.com/greatthingmkt"
+  ]
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  "name": "Great Thing Market",
+  "url": siteUrl,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": `${siteUrl}/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string"
+  }
+};
+
+// Breadcrumb Schema
+const pathSegments = pathname.split('/').filter(Boolean);
+let breadcrumbSchema = null;
+if (pathSegments.length > 1) {
+  breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": pathSegments.map((segment, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": segment.replace(/-/g, ' '),
+      "item": `${siteUrl}/${pathSegments.slice(0, i + 1).join('/')}`
+    }))
+  };
+}
+---
+
+<!DOCTYPE html>
+<html lang={currentLang} dir={currentLang === 'ar' ? 'rtl' : 'ltr'} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- ✅ SEO Basique -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={pageUrl} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- ✅ Hreflang pour multilingue -->
+    {['en','fr','es','de','ar','pt'].map(l => (
+      <link rel="alternate" hreflang={l} href={`${siteUrl}/${l}${pathname.replace(/^\/(en|fr|es|de|ar|pt)/, '')}`} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/en${pathname.replace(/^\/(en|fr|es|de|ar|pt)/, '')}`} />
+
+    <!-- ✅ Open Graph (Facebook/LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Great Thing Market" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={pageImage} />
+    <meta property="og:url" content={pageUrl} />
+    
+    <!-- ✅ Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@greatthingmkt" />
+    
+    <!-- ✅ Pinterest -->
+    <meta name="pinterest-rich-pin" content="true" />
+
+    <!-- ✅ Google Analytics 4 (via composant) -->
+    <GoogleAnalytics />
+    
+    <!-- ✅ Vérifications Search Console -->
+    {GOOGLE_VERIFICATION && (
+      <meta name="google-site-verification" content={GOOGLE_VERIFICATION} />
+    )}
+    {BING_VERIFICATION && (
+      <meta name="msvalidate.01" content={BING_VERIFICATION} />
+    )}
+
+    <!-- ✅ Microsoft Clarity Analytics -->
+    {CLARITY_ID && (
+      <script is:inline define:vars={{ CLARITY_ID }}>
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", CLARITY_ID);
+      </script>
+    )}
+
+    <!-- ✅ PWA & Favicons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1a936f" />
+
+    <!-- ✅ DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://m.media-amazon.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- ✅ Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;800&display=swap" />
+    
+    <!-- ✅ Global CSS -->
+    <link rel="stylesheet" href="/styles/global.css" />
+
+    <!-- ✅ Schema.org JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased font-inter">
+    <!-- ✅ Accessibilité : Skip to main content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-[#1a936f] focus:text-white focus:px-4 focus:py-2 focus:rounded">
+      Skip to main content
+    </a>
+
+    <Header client:load t={t} currentLang={currentLang} />
+
+    <main id="main-content" role="main">
+      <slot />
+    </main>
+
+    <Footer t={t} currentLang={currentLang} />
+
+    <!-- ✅ Lazy Loading Images Fallback -->
+    <script is:inline>
+      if ('loading' in HTMLImageElement.prototype) {
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          if (img.dataset.src) img.src = img.dataset.src;
+        });
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+        document.body.appendChild(script);
+      }
+    </script>
+    
+    <!-- ✅ Pinterest Pin It Button -->
+    <script is:inline async defer src="//assets.pinterest.com/js/pinit.js" data-pin-hover="true"></script>
+  </body>
+</html>
+
+<style is:global>
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
