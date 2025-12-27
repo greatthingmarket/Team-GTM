@@ -9,8 +9,9 @@ interface Props {
 
 const { post } = Astro.props;
 
-// Extraction de la langue depuis l'ID (ex: "fr/article")
-const [postLang, postSlug] = post.id.split('/');
+// ✅ CORRECTION : Extraction propre du slug sans extension
+const [postLang, ...slugParts] = post.id.split('/');
+const postSlug = slugParts.join('/').replace(/\.mdx?$/, ''); // Retire .md ou .mdx
 
 // Récupération sécurisée des traductions
 const t = useTranslations(postLang);

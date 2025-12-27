@@ -1,0 +1,126 @@
+---
+// src/components/Header.astro
+import LanguageSelector from './LanguageSelector.jsx';
+import logoImg from '../assets/Great_logo.png';
+import { useTranslations, type Locale } from '../i18n/ui';
+
+interface Props {
+  currentLang: Locale;
+}
+
+const { currentLang = 'en' } = Astro.props;
+
+// Récupération des traductions pour le Header
+const t = useTranslations(currentLang);
+const nav = t.nav || {};
+const cta = t.cta || {};
+---
+
+<header 
+  id="main-header"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-4 border-b border-slate-100"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+      
+      <div class="flex-shrink-0 flex items-center">
+        <a href={`/${currentLang}/`} class="flex items-center gap-2 group">
+          <img src={logoImg.src} alt="Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
+          <span class="hidden sm:block font-poppins font-bold text-xl text-primary">
+            Great Thing Market
+          </span>
+        </a>
+      </div>
+
+      <nav class="hidden lg:flex items-center space-x-8 font-poppins font-medium text-slate-700">
+        <a href={`/${currentLang}/#deals`} class="hover:text-primary transition-colors">{nav.flashDeals}</a>
+        <a href={`/${currentLang}/#categories`} class="hover:text-primary transition-colors">{nav.categories}</a>
+        <a href={`/${currentLang}/blog`} class="hover:text-primary transition-colors">{nav.blog}</a>
+        <a href={`/${currentLang}/#about`} class="hover:text-primary transition-colors">{nav.about}</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <div class="relative z-[60]">
+          <LanguageSelector client:load currentLang={currentLang} />
+        </div>
+
+        <a 
+          href={`/${currentLang}/#newsletter`}
+          class="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-primary text-white font-bold rounded-full hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
+        >
+          {cta.exclusive || "Exclusive Deals"}
+        </a>
+
+        <button 
+          id="mobile-menu-button"
+          class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
+          aria-label="Toggle Menu"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div 
+    id="mobile-menu" 
+    class="hidden lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 shadow-xl overflow-hidden"
+  >
+    <div class="px-4 pt-2 pb-6 space-y-2">
+      <a href={`/${currentLang}/#deals`} class="block px-4 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary rounded-xl">{nav.flashDeals}</a>
+      <a href={`/${currentLang}/#categories`} class="block px-4 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary rounded-xl">{nav.categories}</a>
+      <a href={`/${currentLang}/blog`} class="block px-4 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary rounded-xl">{nav.blog}</a>
+      <div class="pt-4 px-4">
+        <a href={`/${currentLang}/#newsletter`} class="flex items-center justify-center w-full py-3 bg-primary text-white font-bold rounded-xl shadow-md">
+          {cta.exclusive}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    const header = document.getElementById('main-header');
+    const mobileMenuBtn = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // Effet de scroll pour le header
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header?.classList.add('shadow-md', 'py-3');
+        header?.classList.remove('py-4');
+      } else {
+        header?.classList.remove('shadow-md', 'py-3');
+        header?.classList.add('py-4');
+      }
+    });
+
+    // Toggle Menu Mobile
+    mobileMenuBtn?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+
+    // Fermer le menu mobile lors d'un clic sur un lien d'ancrage
+    const mobileLinks = mobileMenu?.querySelectorAll('a');
+    mobileLinks?.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+      });
+    });
+  }
+
+  // Initialisation au chargement et après transition Astro
+  document.addEventListener('astro:page-load', initHeader);
+  initHeader();
+</script>
+
+<style>
+  /* Fixation pour éviter que le contenu ne passe au-dessus du menu */
+  #main-header {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+</style>
