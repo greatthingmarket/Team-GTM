@@ -137,6 +137,16 @@
       "yandex"
     ]
 
+[[plugins]]
+  package = "netlify-plugin-indexnow"
+
+  [plugins.inputs]
+    # L'URL de votre site final
+    siteUrl = "https://greatthingmarket.com"
+    
+    # La clé que vous avez générée précédemment
+    apiKey = "82e1b0def0b64257a007fc561848693a"
+
 # ==================================
 # ⚡ EDGE FUNCTIONS (Optional)
 # ==================================
